@@ -27,7 +27,7 @@
         }
 
         for (var ix = 0; ix < 100; ix++) {
-            world.enemies.push(new Entity(rand(10, 510), rand(0, 100), 10, 10));
+            world.enemies.push(new Entity(Math.round(rand(10, 510)), Math.round(rand(0, 100)), 10, 10));
         }
 
         ko.applyBindings(world);
@@ -41,7 +41,8 @@
             worldTime = newTime;
 
             world.enemies.forEach(function (enemy) {
-                enemy.pos.y(enemy.pos.y() + tickTime / 100);
+                enemy.pos.y(
+                  Math.round(enemy.pos.y() + tickTime / 10));
             });
         })();
     }
