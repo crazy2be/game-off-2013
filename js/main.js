@@ -2,13 +2,14 @@
     var ko = require("knockout");
     var PerfChart = require("perf/PerfChart");
     var $ = require("jquery");
+    var addBindings = require("customBindings");
 
     return function main() {
         function Vec2(x, y) {
             var self = this;
 
             self.x = ko.observable(x || 0);
-            self.y = ko.observable(y || 0);
+           	self.y = ko.observable(y || 0);
         }
 
         function Entity(x, y, width, height) {
@@ -28,11 +29,13 @@
             return Math.random() * (max - min) + min;
         }
 
-        for (var ix = 0; ix < 100; ix++) {
-            world.enemies.push(new Entity(Math.round(rand(10, 510)), Math.round(rand(0, 100)), 10, 10));
+        for (var ix = 0; ix < 2000; ix++) {
+            world.enemies.push(new Entity(~~rand(10, 510), ~~rand(0, 100), 10, 10));
         }
 
-        ko.applyBindings(world);
+        addBindings(ko.bindingHandlers);
+
+        ko.applyBindings(world);		
 
         var chart = new PerfChart();
         $('.perfChart')[0].appendChild(chart.elm);
@@ -48,8 +51,7 @@
             chart.addDataPoint(tickTime);
 
             world.enemies.forEach(function (enemy) {
-                enemy.pos.y(
-                  Math.round(enemy.pos.y() + tickTime / 10));
+                enemy.pos.y(enemy.pos.y() + ~~(tickTime / 10));
             });
         })();
     }
