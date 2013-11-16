@@ -112,8 +112,8 @@
             chart.addDataPoint(tickTime);
 
             world.enemies.forEach(function (enemy) {
-                enemy.pos.x += (Math.random() - 0.4) * tickTime / 10;
-                enemy.pos.y += (Math.random() - 0.4) * tickTime / 10;
+                enemy.pos().x += (Math.random() - 0.4) * tickTime / 10;
+                enemy.pos().y += (Math.random() - 0.4) * tickTime / 10;
                 enemy.pos.valueHasMutated();
             });
         })();
