@@ -2,6 +2,7 @@
     var ko = require("knockout");
     var PerfChart = require("perf/PerfChart");
     var $ = require("jquery");
+    var addBindings = require("customBindings");
 
     /*return*/ function main() {
       var chart = new PerfChart();
@@ -68,15 +69,15 @@
         function Vec2(x, y) {
             var self = this;
 
-            self.x = ko.observable(x || 0);
-            self.y = ko.observable(y || 0);
+            self.x = x || 0;
+           	self.y = y || 0;
         }
 
         function Entity(x, y, width, height) {
             var self = this;
 
-            self.pos = new Vec2(x, y);
-            self.size = new Vec2(width, height);
+            self.pos = ko.observable(new Vec2(x, y));
+            self.size = ko.observable(new Vec2(width, height));
         }
 
         var world = {
@@ -90,8 +91,10 @@
         }
 
         for (var ix = 0; ix < 1000; ix++) {
-            world.enemies.push(new Entity(Math.round(rand(10, 510)), Math.round(rand(0, 100)), 10, 10));
+            world.enemies.push(new Entity(~~rand(10, 510), ~~rand(0, 100), 10, 10));
         }
+
+        addBindings(ko.bindingHandlers);
 
         ko.applyBindings(world);
 
@@ -109,8 +112,9 @@
             chart.addDataPoint(tickTime);
 
             world.enemies.forEach(function (enemy) {
-                enemy.pos.y(Math.round(enemy.pos.y() + (Math.random() - 0.4) * tickTime / 10));
-                enemy.pos.x(Math.round(enemy.pos.x() + (Math.random() - 0.4) * tickTime / 10));
+                enemy.pos.x += (Math.random() - 0.4) * tickTime / 10;
+                enemy.pos.y += (Math.random() - 0.4) * tickTime / 10;
+                enemy.pos.valueHasMutated();
             });
         })();
     }

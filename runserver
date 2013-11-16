@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-#!Attention we forward our args to server! So if you want any args to this,
-#!eat them before we pass our args to server (http://stackoverflow.com/questions/1537673/how-do-i-forward-parameters-to-other-command-in-bash-script)
+#Attention we forward our args to server! So if you want any args to this,
+#eat them before we pass our args to server (http://stackoverflow.com/questions/1537673/how-do-i-forward-parameters-to-other-command-in-bash-script)
 
 if go version; then
         export GOPATH="`pwd`/../../"

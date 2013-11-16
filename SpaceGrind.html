@@ -10,8 +10,9 @@
 </head>
 <body>
     <div class="perfChart"></div>
-
-    <!-- ko foreach: enemies -->
-        <div style="position: absolute; background-color:red" data-bind="style: { left: pos.x, top: pos.y, width: size.x, height: size.y }"></div>
-    <!-- /ko -->
+	
+	<!-- ko foreach: enemies -->
+    <div id="enemy" style="position: absolute; background-color:red"
+         data-bind="style: { left: pos().x, top: pos().y, width: size().x, height: size().y }"></div>
+	<!-- /ko -->
 </body>
