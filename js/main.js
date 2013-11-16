@@ -64,8 +64,8 @@
         function Entity(x, y, width, height) {
             var self = this;
 
-            self.pos = ko.observable(new Vec2(x, y)_;
-            self.size = new Vec2(width, height);
+            self.pos = ko.observable(new Vec2(x, y));
+            self.size = ko.observable(new Vec2(width, height));
         }
 
         var world = {
