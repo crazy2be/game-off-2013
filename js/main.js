@@ -1,9 +1,11 @@
 ﻿define(function (require) {
-//     var ko = require("knockout");
-//     var PerfChart = require("perf/PerfChart");
-//     var $ = require("jquery");
+    var ko = require("knockout");
+    var PerfChart = require("perf/PerfChart");
+    var $ = require("jquery");
 
-    return function main() {
+    /*return*/ function main() {
+      var chart = new PerfChart();
+      $('.perfChart')[0].appendChild(chart.elm);
       function observable(obj) {
         obj.__cbs = {};
         obj.on = function (evt, cb) {
@@ -42,14 +44,24 @@
           elem.style.left = pos.x + 'px';});
         document.body.appendChild(elem);}
       var entities = [];
-      for (var i = 0; i < 100; i++) {
-        var entity = new Entity(Math.random()*400, Math.random()*400, Math.random()*400, Math.random()*400);
-        new EntityPresenter(entity);
-        entities.push(entity);}
+      var presenters = [];
+      for (var i = 0; i < 1000; i++) {
+        var entity = new Entity(Math.random()*1000 + 200, Math.random()*400 + 100, 0, 0);
+        var presenter = new EntityPresenter(entity);
+        entities.push(entity); presenters.push(presenter)}
+      var worldTime = new Date().getTime();
       function gameLoop() {
-        for (var i = 0; i < 100; i++) {
-          entities[i].pos.y += 1;}
-        requestAnimationFrame(gameLoop);}
+        var newTime = new Date().getTime();
+        var tickTime = newTime - worldTime;
+        worldTime = newTime;
+
+        chart.addDataPoint(tickTime);
+        for (var i = 0; i < entities.length; i++) {
+          entities[i].pos.y += Math.round(6*(Math.random() - 0.5));
+          entities[i].pos.x += Math.round(6*(Math.random() - 0.5));
+        }
+        requestAnimationFrame(gameLoop);
+      }
       gameLoop();
     };
     return function main() {
@@ -77,7 +89,7 @@
             return Math.random() * (max - min) + min;
         }
 
-        for (var ix = 0; ix < 100; ix++) {
+        for (var ix = 0; ix < 1000; ix++) {
             world.enemies.push(new Entity(Math.round(rand(10, 510)), Math.round(rand(0, 100)), 10, 10));
         }
 
@@ -97,8 +109,8 @@
             chart.addDataPoint(tickTime);
 
             world.enemies.forEach(function (enemy) {
-                enemy.pos.y(
-                  Math.round(enemy.pos.y() + tickTime / 10));
+                enemy.pos.y(Math.round(enemy.pos.y() + (Math.random() - 0.4) * tickTime / 10));
+                enemy.pos.x(Math.round(enemy.pos.x() + (Math.random() - 0.4) * tickTime / 10));
             });
         })();
     }
