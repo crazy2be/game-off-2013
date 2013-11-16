@@ -1,5 +1,7 @@
 ﻿define(function (require) {
     var ko = require("knockout");
+    var PerfChart = require("perf/PerfChart");
+    var $ = require("jquery");
 
     return function main() {
         function Vec2(x, y) {
@@ -32,6 +34,9 @@
 
         ko.applyBindings(world);
 
+        var chart = new PerfChart();
+        $('.perfChart')[0].appendChild(chart.elm);
+
         var worldTime = new Date().getTime();
         (function GameLoop() {
             self.requestAnimationFrame(GameLoop);
@@ -39,6 +44,8 @@
             var newTime = new Date().getTime();
             var tickTime = newTime - worldTime;
             worldTime = newTime;
+
+            chart.addDataPoint(tickTime);
 
             world.enemies.forEach(function (enemy) {
                 enemy.pos.y(

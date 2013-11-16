@@ -107,7 +107,7 @@ define(function(require) {
 		}
 
 		function clamp(n, a, b) {
-			return max(a, min(b, n));
+			return Math.max(a, Math.min(b, n));
 		}
 	}
 });
