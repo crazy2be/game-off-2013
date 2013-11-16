@@ -1,0 +1,30 @@
+#!/bin/bash -e
+
+#!Attention we forward our args to server! So if you want any args to this,
+#!eat them before we pass our args to server (http://stackoverflow.com/questions/1537673/how-do-i-forward-parameters-to-other-command-in-bash-script)
+
+if go version; then
+        export GOPATH="`pwd`/../../"
+
+        if [ ! -e "$GOPATH/src" ]; then
+                echo "WARN: Probably misconfigured GOPATH"
+                echo "(no src/ directory found at GOPATH root)"
+                echo "Your game-off-2013 repository must be at <anything>/src/game-off-2013/"
+                echo "as this is a requirement of the go compiler toolchain."
+                echo "if <anything> == GOPATH, then the go tools will work as well."
+        fi
+
+        export GOBIN="`pwd`/bin"
+        echo "Compiling server..."
+        mkdir -p "$GOBIN"
+        go get game-off-2013/server
+
+        echo "Starting server..."
+        bin/server $@
+
+        exit 0
+else
+        echo "ERROR: Go must be installed to compile the server."
+        echo "Get it from http://www.golang.org"
+        exit 1
+fi
