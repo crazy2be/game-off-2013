@@ -6,13 +6,50 @@
 	overflow: hidden;
 }
 
-.entity {
+.Entity {
 	position: absolute;
 	background-color: red;
 	width: 10px;
 	height: 10px;
 }
+.BaseEntity {
+	background-color: green;
+}
+.BulletEntity {
+	background-color: blue;
+}
+.EnemyEntity {
+	background-color: red;
+}
+.YouEntity {
+	background-color: yellow;
+	border: 2px solid black;
+}
 
+.healthBar {
+	height: 20%;
+	margin-top: -30%;
+	margin-left: -50%;
+	background-color: orange;
+}
+.BaseEntity .healthBar {
+	margin-top: 5%;
+}
+
+.perfChart {
+	position:absolute;
+	left:100vw;
+	width: 80px;
+	margin-left: -80px;
+}
+
+.gameInfo {
+	position: absolute;
+	left: 0px;
+}
+
+
+/* Game over screen */
 .centerStage1 {
 	pointer-events: none;
 	margin-left: 50vw;
@@ -42,50 +79,3 @@
 	.gameOverMessage {
 		font-size: 30px;
 	}
-
-.entity {
-	position: absolute;
-}
-
-.friendo {
-	background-color:green;
-}
-
-.bullet {
-	background-color:blue;
-}
-
-.enemy {
-	background-color:red;
-}
-
-.you {
-	background-color:yellow;
-}
-
-.healthBar {
-	height: 20%;
-	margin-top: -30%;
-	margin-left: -50%;
-	background-color: orange;
-}
-
-.BaseEntity .healthBar {
-	margin-top: 5%;
-}
-
-.YouEntity {
-	border: 2px solid black;
-}
-
-.perfChart {
-	position:absolute;
-	left:100vw;
-	width: 80px;
-	margin-left: -80px;
-}
-
-.gameInfo {
-	position: absolute;
-	left: 0px;
-}

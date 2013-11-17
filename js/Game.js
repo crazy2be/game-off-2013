@@ -63,7 +63,7 @@
 			});
 			
 			if(hitEntity) {
-				hitEntity.hp(hitEntity.hp() - 40);
+				hitEntity.hp(hitEntity.hp() - 60);
 				game.remove(self);
 			}
 			
@@ -80,7 +80,7 @@
 			Timer.TickAll(self, tickTime);
 			
 			if(input.keyboardState[' ']) {
-				throttle(self, 500, function() {
+				throttle(self, 50, function() {
 					var bullet = new BulletEntity(game, collision, false);
 					bullet.size(new Vec2(10, 10));
 					bullet.pos(self.pos().clone());
