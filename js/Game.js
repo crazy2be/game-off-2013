@@ -16,17 +16,8 @@
 	var Vec2 = require("Vec2");
 	
 	var makeDoOnce = require("makeDoOnce");
-
-	function forEach(array, callback) {
-		for(var ix = 0; ix < array.length; ix++) {
-			var tmp = array[ix];
-			callback(tmp);
-			if (array[ix] != tmp) {
-				// Element was removed
-				ix--
-			}
-		}
-	}
+	
+	var copyForEach = require("copyForEach");
 
 	function rand(min, max) {
 		return Math.random() * (max - min) + min;
@@ -215,9 +206,9 @@
 					lastLevelDispose();
 				}
 				
-				forEach(world.enemies(), self.remove);
-				forEach(world.friendos(), self.remove);
-				forEach(world.bullets(), self.remove);
+				copyForEach(world.enemies(), self.remove);
+				copyForEach(world.friendos(), self.remove);
+				copyForEach(world.bullets(), self.remove);
 				
 				//1 for YouEntity
 				if(collision.objArrayDEBUG.length !== 1) {
@@ -266,9 +257,9 @@
 			}
 
 			if(world.gameState() === "playing") {
-				forEach(world.enemies(), applyTick);
-				forEach(world.friendos(), applyTick);
-				forEach(world.bullets(), applyTick);
+				copyForEach(world.enemies(), applyTick);
+				copyForEach(world.friendos(), applyTick);
+				copyForEach(world.bullets(), applyTick);
 			
 				applyTick(world.you);
 			}
