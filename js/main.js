@@ -7,9 +7,8 @@
 	var Game = require("Game");
 
 	var Firebase = require("Firebase");
-
-	var fb = new Firebase('https://r4zlxbwki99.firebaseio-demo.com/');
-	fb.set("Testing");
+	var db = new Firebase('https://r4zlxbwki99.firebaseio-demo.com/');
+	db.set("Testing");
 
 	function resize() {
 		var w = window.innerWidth;
@@ -27,7 +26,7 @@
 
 		$('#loadingScreen').fadeOut(500, 'swing', function () {$(this).remove()});
 
-		var game = new Game();
+		var game = new Game(db);
 
 		var chart = new PerfChart();
 		$('.perfChart')[0].appendChild(chart.elm);
@@ -36,11 +35,12 @@
 		(function GameLoop() {
 			self.requestAnimationFrame(GameLoop);
 
-			//TODO: Cap frame time...
+			// TODO: Cap frame time...
+			// TODO: Fixed timesteps
 			var newTime = new Date().getTime();
 			var tickTime = newTime - worldTime;
 			worldTime = newTime;
-			
+
 			tickTime = Math.min(tickTime, 350);
 
 			chart.addDataPoint(tickTime);
