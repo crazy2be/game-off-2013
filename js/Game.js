@@ -14,6 +14,8 @@
 	var embed = require("embed");
 	
 	var Vec2 = require("Vec2");
+	
+	var makeDoOnce = require("makeDoOnce");
 
 	function rand(min, max) {
 		return Math.random() * (max - min) + min;
@@ -116,12 +118,45 @@
 		var input = new Input();
 		var collision = new Collision();
 
+		function StartLevel(world, nextLevelCallback, gameOverCallback) {
+			var base = new BaseEntity(self, collision);
+			base.pos(new Vec2(0, 500));
+			base.size(new Vec2(600, 200));
+		
+			world.friendos.push(base);
+		
+			world.you.pos(new Vec2(300, 450));
+			world.you.size(new Vec2(50, 50));
+
+			for (var ix = 0; ix < 101; ix++) {
+				var enemy = new EnemyEntity(self, collision, base);
+				enemy.pos(new Vec2(~~rand(10, 510), ~~rand(0, 100)));
+				enemy.size(new Vec2(10, 10));
+				enemy.vel(new Vec2(0, rand(50, 80)));
+				world.enemies.push(enemy);
+			}
+			
+			world.enemies.subscribe(function(enemies){
+				if(enemies.length === 0) {
+					nextLevelCallback();
+				}
+			});
+		
+			base.hp.subscribe(function(newValue) {
+				if(newValue <= 0) {
+					gameOverCallback();
+				}
+			})
+		}
+
 		var world = {
 			enemies: ko.observableArray(),
 			friendos: ko.observableArray(),
 			bullets: ko.observableArray(),
 			you: new YouEntity(self, collision, input),
-			gameState: ko.observable("starting") //starting, playing, gameover
+			gameState: ko.observable("starting"), //starting, playing, gameover
+			levels: ko.observableArray([StartLevel]),
+			level: ko.observable(0)
 		};
 		
 		window.world = world;
@@ -164,40 +199,33 @@
 		})
 
 		function startPlaying() {
-			world.enemies([]);
-			world.friendos([]);
-			world.bullets([]);
+			function loadLevel() {
+				var curLevel = world.levels()[world.level()];
 			
-			var base = new BaseEntity(self, collision);
-			base.pos(new Vec2(0, 500));
-			base.size(new Vec2(600, 200));
-		
-			world.friendos.push(base);
-		
-			world.you.pos(new Vec2(300, 450));
-			world.you.size(new Vec2(50, 50));
-
-			for (var ix = 0; ix < 1; ix++) {
-				var enemy = new EnemyEntity(self, collision, base);
-				enemy.pos(new Vec2(~~rand(10, 510), ~~rand(0, 100)));
-				enemy.size(new Vec2(10, 10));
-				enemy.vel(new Vec2(0, rand(50, 80)));
-				world.enemies.push(enemy);
+				world.enemies([]);
+				world.friendos([]);
+				world.bullets([]);
+			
+				curLevel(world, makeDoOnce(nextLevel), makeDoOnce(gameOver));
 			}
-		
-			base.hp.subscribe(function(newValue) {
-				if(newValue <= 0 && world.gameState() === "playing") {
-					world.gameState("gameover");
-					
-					//Stupid knockout...
-					new Timer(self).after(5, function() {
-						base.hp(0);
-					})
-					new Timer(self).after(5000, function() {
-						world.gameState("playing");
-					})
+			
+			//Could just watch the level... but then there is a chance they will change it multiple times...
+			function nextLevel() {
+				world.level(world.level() + 1);
+				if(world.level() >= world.levels().length) {
+					world.level(0);
 				}
-			})
+				
+				loadLevel();
+			}
+			
+			function gameOver() {
+				world.level(0);
+				
+				loadLevel();
+			}
+			
+			loadLevel();
 		}
 		
 		world.gameState("playing");
