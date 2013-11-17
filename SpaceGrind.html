@@ -1,12 +1,11 @@
 <head>
     <title>Space Grind</title>
-    <script data-main="js/boot.js" src="js/lib/require.js"></script>
     <link rel="stylesheet" href="css/main.css"/>
 </head>
 <body>
 	<div class="perfChart"></div>
 
-	<div id="gamebroad-wrapper-wrapper"><div id="gameboard-wrapper"><div id="gameboard">
+	<div id="gameboard">
 		<!-- ko foreach: friendos -->
 			<div class="entity friendo" data-bind="pos: pos(), size: size(), types: types">
 				<div class="healthBar" data-bind="style: { width: hp() + '%' }"></div>
@@ -22,13 +21,21 @@
 				<div class="healthBar" data-bind="style: { width: hp() * 2 + '%' }"></div>
 			</div>
 		<!-- /ko -->
-	
+
 		<!-- ko with: you -->
 			<div class="entity you" data-bind="pos: pos(), size: size(), types: types">
 				<div class="healthBar" data-bind="style: { width: hp() * 2 + '%' }"></div>
 			</div>
 		<!-- /ko -->
-	</div></div></div>
+	</div>
+
+	<div class="loadingScreen">
+		<div class="centerStage1">
+		<div class="centerStage2">
+		<div class="centerStage3">
+		Loading...
+		</div></div></div>
+	</div>
 
 	<div class="statusScreen" data-bind="css: { gameOverScreen: gameState() == 'gameover' }">
 		<div class="centerStage1">
@@ -38,9 +45,10 @@
 		</div>
 	</div>
 
-	
+
 	<div class="gameInfo">
 		Enemies Left: <span data-bind="text: enemies().length">
 	</div>
 
+	<script data-main="js/boot.js" src="js/lib/require.js"></script>
 </body>

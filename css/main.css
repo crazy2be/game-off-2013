@@ -4,10 +4,10 @@
 	box-sizing: border-box;
 }
 body {
-	background-color:aliceblue;
-	width:100vw;
-	height:100vh;
-	margin:0px;
+	background-color: aliceblue;
+	width: 100vw;
+	height: 100vh;
+	margin: 0px;
 	overflow: hidden;
 }
 
@@ -57,7 +57,13 @@ body {
 	left: 0px;
 }
 
-
+.loadingScreen {
+	position: absolute;
+	top: 0; left: 0; right: 0; bottom: 0;
+	font-size: 30px;
+	background: white;
+	z-index: 1000;
+}
 /* Game over screen */
 .centerStage1 {
 	pointer-events: none;
