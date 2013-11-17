@@ -54,7 +54,7 @@
 			
 			entity.vel().x = xVel;
 			var hitByEnemy = collision.collides(self, function(other){
-				return !other.types["EnemyEntity"];
+				return other.types["EnemyEntity"];
 			}); 
 			entity.vel().y = hitByEnemy ? 200 : 0;
 			
