@@ -1,4 +1,4 @@
-﻿requirejs.config({
+requirejs.config({
 	//We need paths because min files are annoying to handle with magicWrapper...
 	paths: {
 		//THREE: 'lib/three',

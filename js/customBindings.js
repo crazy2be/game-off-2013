@@ -1,4 +1,4 @@
-﻿define(function (require) {
+define(function (require) {
 	return function addBindingHandlers(bindingHandlers) {
 		bindingHandlers.stopBindings = {
 			init: function () {

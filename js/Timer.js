@@ -1,4 +1,4 @@
-﻿define(function (require) {	
+define(function (require) {	
 	
 	function Timer(host) {
 		var self = this;

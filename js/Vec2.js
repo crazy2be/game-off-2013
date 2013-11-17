@@ -1,4 +1,4 @@
-﻿define(function (require) {
+define(function (require) {
 	return function Vec2(x, y) {
 		var self = this;
 
