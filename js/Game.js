@@ -31,14 +31,12 @@
 		//Just for debugging... or maybe not...
 		window.game = self;
 
-		var input = new Input();
 		var collision = new Collision();
 
 		var world = {
 			enemies: ko.observableArray(),
 			friendos: ko.observableArray(),
 			bullets: ko.observableArray(),
-			you: new Ents.YouEntity(self, collision, input),
 			gameState: ko.observable("starting"), //starting, playing, gameover
 			levels: ko.observableArray([Levels.BasicLevel]),
 			level: ko.observable(0)
@@ -51,8 +49,6 @@
 				return world.enemies;
 			} if(obj.types["BulletEntity"]) {
 				return world.bullets;
-			} else if(obj.types["YouEntity"]) {
-				throw "Eh, maybe don't remove yourself...";
 			} else {
 				return world.friendos;
 			}
@@ -92,7 +88,7 @@
 				copyForEach(world.bullets(), self.remove);
 				
 				//1 for YouEntity
-				if(collision.objArrayDEBUG.length !== 1) {
+				if(collision.objArrayDEBUG.length !== 0) {
 					throw "Collisions not correctly disposed!";
 				}
 			
@@ -141,8 +137,6 @@
 				copyForEach(world.enemies(), applyTick);
 				copyForEach(world.friendos(), applyTick);
 				copyForEach(world.bullets(), applyTick);
-			
-				applyTick(world.you);
 			}
 		};
 	}
