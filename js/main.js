@@ -6,6 +6,7 @@
 	
 	var Input = require("Input");
 	var Collision = require("Collision");
+	var Timer = require("Timer");
 	
 	var Entity = require("Entity");
 	
@@ -21,10 +22,14 @@
 		var self = this;
 		var entity = embed(self, new Entity(collision));
 		
+		new Timer(self).every(1000, function() {
+			console.log("test");
+			entity.acc().y = rand(-0.5, 0.5);
+		})
+		
 		self.tick = function(tickTime) {
+			Timer.TickAll(self, tickTime);
 			entity.tick.apply(self, arguments);
-			
-			entity.vel().y = rand(2, 12) / 1;
 		}
 	}
 	
@@ -58,11 +63,11 @@
 		var input = new Input();
 		var collision = new Collision();
 
-        for (var ix = 0; ix < 300; ix++) {
+        for (var ix = 0; ix < 1; ix++) {
 			var enemy = new EnemyEntity(collision);
 			enemy.pos(new Vec2(~~rand(10, 510), ~~rand(0, 100)));
 			enemy.size(new Vec2(10, 10));
-			enemy.vel(new Vec2(0, rand(0.5, 0.8)));
+			enemy.vel(new Vec2(0, rand(50, 80)));
             world.enemies.push(enemy);
         }
 		

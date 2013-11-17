@@ -8,6 +8,7 @@
 
         self.pos = ko.observable(new Vec2());
 		self.vel = ko.observable(new Vec2());
+		self.acc = ko.observable(new Vec2());
         self.size = ko.observable(new Vec2());
 		
 		self.colObj = collision.addObj(self.pos(), self.vel());
@@ -19,6 +20,12 @@
 			collision.updateObj(self.colObj, self.pos(), self.size());
 		});
 		
+		function applyAcc(tickTime) {
+			self.vel().x += self.acc().x * tickTime / 1000;
+			self.vel().y += self.acc().y * tickTime / 1000;
+			self.vel.valueHasMutated();
+		}
+		
 		function applyVel(tickTime) {
 			self.pos().x += self.vel().x * tickTime / 1000;
 			self.pos().y += self.vel().y * tickTime / 1000;
@@ -26,6 +33,7 @@
 		}
 		
 		self.tick = function(tickTime) {
+			applyAcc(tickTime);
 			applyVel(tickTime);
 		};
     }
