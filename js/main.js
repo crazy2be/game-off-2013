@@ -32,6 +32,7 @@
 			
 			if(collision.intersects(base.colObj, self.colObj)) {
 				base.hp(base.hp() - 1);
+				dispose(self);
 			}
 			
 			entity.tick.apply(self, arguments);
@@ -40,7 +41,7 @@
 	
 	function YouEntity(dispose, collision, input) {
 		var self = this;
-		var entity = embed(self, new Entity(collision));
+		var entity = embed(self, new Entity(dispose, collision));
 		
 		self.tick = function(tickTime) {
 			var xVel = 0;
@@ -58,43 +59,47 @@
 		}
 	}
 	
-	function BaseEntity(collision) {
+	function BaseEntity(dispose, collision) {
 		var self = this;
-		var entity = embed(self, new Entity(collision));
+		var entity = embed(self, new Entity(dispose, collision));
 	}
 
     return function main() {
         var world = {
-            enemies: [],
-            friendos: [],
+            enemies: ko.observableArray([]),
+            friendos: ko.observableArray([]),
             you: {}
         };
 
 		var input = new Input();
 		var collision = new Collision();
 
-		var base = new BaseEntity(collision);
-		base.pos(new Vec2(0, 200));
-		base.size(new Vec2(200, 200));
-		
-		function MakeRemove(array, obj) {
-			return function() {
+		function MakeRemove(arrayObserv) {
+			var array = arrayObserv();
+			return function(obj) {
 				for (var ix = array.length - 1; ix >= 0; ix--) {
 					if(array[ix] === obj) {
 						array.splice(ix, 1);
 					}
 				}
+				
+				arrayObserv.valueHasMutated();
 			}
 		}
+
+		var base = new BaseEntity(MakeRemove(world.friendos), collision);
+		base.pos(new Vec2(0, 200));
+		base.size(new Vec2(600, 200));
 		
 		world.friendos.push(base);
 		
-		world.you = new YouEntity(collision, input);
+		//Dispose won't work yet..
+		world.you = new YouEntity(null, collision, input);
 		world.you.pos(new Vec2(300, 200));
 		world.you.size(new Vec2(50, 50));
 
-        for (var ix = 0; ix < 1; ix++) {
-			var enemy = new EnemyEntity(collision, base);
+        for (var ix = 0; ix < 300; ix++) {
+			var enemy = new EnemyEntity(MakeRemove(world.enemies), collision, base);
 			enemy.pos(new Vec2(~~rand(10, 510), ~~rand(0, 100)));
 			enemy.size(new Vec2(10, 10));
 			enemy.vel(new Vec2(0, rand(50, 80)));
@@ -122,8 +127,8 @@
 				entity.tick(tickTime);
 			}
 
-            world.enemies.forEach(applyTick);
-			world.friendos.forEach(applyTick);
+            world.enemies().forEach(applyTick);
+			world.friendos().forEach(applyTick);
 			
 			applyTick(world.you);
         })();

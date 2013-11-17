@@ -3,7 +3,7 @@
 	var $ = require("jquery");
 	var Vec2 = require("Vec2")
 
-	return function Entity(collision) {
+	return function Entity(dispose, collision) {
 		var self = this;
 
 		self.pos = ko.observable(new Vec2());
