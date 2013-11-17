@@ -34,19 +34,19 @@
 	</div>
 
 	<div id="loadingScreen">
-		<div class="centerStage1">
-		<div class="centerStage2">
-		<div class="centerStage3">
+		<div class="centeredLevel1">
+		<div class="centeredLevel2">
+		<div class="centeredLevel3">
 		Loading...
 		</div></div></div>
 	</div>
 
-	<div class="statusScreen" data-bind="css: { gameOverScreen: gameState() == 'gameover' }">
-		<div class="centerStage1">
-			<div class="centerStage2">
-				<div class="centerStage3 gameOverMessage">Game Over</div>
-			</div>
-		</div>
+	<div id="gameoverScreen" data-bind="css: { gameover: gameState() == 'gameover' }">
+		<div class="centeredLevel1">
+		<div class="centeredLevel2">
+		<div class="centeredLevel3">
+		Game Over
+		</div></div></div>
 	</div>
 
 	<script data-main="js/boot.js" src="js/lib/require.js"></script>
