@@ -37,8 +37,9 @@
 		var entity = embed(self, new Entity(game, collision));
 		
 		new Timer(self).every(1000, function() {
-			entity.acc().y = rand(-0.1, 0.1);
+			self.acc().y = rand(-0.1, 0.1);
 		})
+	
 		
 		self.tick = function(tickTime) {
 			Timer.TickAll(self, tickTime);
@@ -135,11 +136,11 @@
 			world.you.pos(new Vec2(45, 90));
 			world.you.size(new Vec2(10, 5));
 
-			for (var ix = 0; ix < 101; ix++) {
+			for (var ix = 0; ix < 150; ix++) {
 				var enemy = new EnemyEntity(self, collision, base);
 				enemy.pos(new Vec2(~~rand(0, 100), ~~rand(0, 10)));
 				enemy.size(new Vec2(2, 2));
-				enemy.vel(new Vec2(0, rand(1, 4)));
+				enemy.vel(new Vec2(0, rand(4, 8)));
 				world.enemies.push(enemy);
 			}
 			

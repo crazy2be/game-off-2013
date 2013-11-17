@@ -27,6 +27,10 @@
 				<div class="healthBar" data-bind="style: { width: hp() * 2 + '%' }"></div>
 			</div>
 		<!-- /ko -->
+		
+		<div class="gameInfo">
+			Enemies Left: <span data-bind="text: enemies().length">
+		</div>
 	</div>
 
 	<div id="loadingScreen">
@@ -43,11 +47,6 @@
 				<div class="centerStage3 gameOverMessage">Game Over</div>
 			</div>
 		</div>
-	</div>
-
-
-	<div class="gameInfo">
-		Enemies Left: <span data-bind="text: enemies().length">
 	</div>
 
 	<script data-main="js/boot.js" src="js/lib/require.js"></script>

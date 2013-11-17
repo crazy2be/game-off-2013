@@ -12,12 +12,14 @@
 		var x = w > h ? (w - h) / 2 : 0;
 		var y = w > h ? 0 : (h - w) / 2;
 		var mwh = Math.min(w, h);
+		
 		$('#gameboard').css('width', mwh).css('height', mwh)
 			.css('top', y).css('left', x);
 	}
 	return function main() {
 		$(window).on('resize', resize);
 		resize();
+
 		$('#loadingScreen').fadeOut(500, 'swing', function () {$(this).remove()});
 
 		var game = new Game();
