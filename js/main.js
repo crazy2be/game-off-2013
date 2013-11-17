@@ -16,6 +16,7 @@
 		(function GameLoop() {
 			self.requestAnimationFrame(GameLoop);
 
+			//TODO: Cap frame time...
 			var newTime = new Date().getTime();
 			var tickTime = newTime - worldTime;
 			worldTime = newTime;

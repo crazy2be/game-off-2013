@@ -152,8 +152,4 @@
 			applyTick(world.you);
 		};
 	}
-
-	return function main() {
-
-	}
 });
