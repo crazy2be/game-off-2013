@@ -8,8 +8,9 @@
 
 	return function main() {
 		var world = {
-			enemies: ko.observableArray([]),
-			friendos: ko.observableArray([]),
+			enemies: ko.observableArray(),
+			friendos: ko.observableArray(),
+			bullets: ko.observableArray(),
 			you: {},
 			gameState: "playing" //playing, gameover
 		};
@@ -39,6 +40,7 @@
 
 			world.enemies().forEach(applyTick);
 			world.friendos().forEach(applyTick);
+			world.bullets().forEach(applyTick);
 			
 			applyTick(world.you);
 			

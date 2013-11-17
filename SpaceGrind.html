@@ -1,28 +1,33 @@
 <head>
-    <title>Space Grind</title>
-    <script data-main="js/boot.js" src="js/lib/require.js"></script>
-    <link rel="stylesheet" href="css/main.css"/>
-    <style>
-    .entity {
-      position: absolute; background-color: red; width: 10px; height: 10px;
-    }
-    </style>
+	<title>Space Grind</title>
+	<script data-main="js/boot.js" src="js/lib/require.js"></script>
+	<link rel="stylesheet" href="css/main.css"/>
+	<style>
+	.entity {
+		position: absolute; background-color: red; width: 10px; height: 10px;
+	}
+	</style>
 </head>
 <body>
-    <div class="perfChart"></div>
+	<div class="perfChart"></div>
 		
 	<!-- ko foreach: friendos -->
-	    <div style="position: absolute; background-color:green"
-	         data-bind="pos: pos(), size: size(), text: hp()"></div>
+		<div style="position: absolute; background-color:green"
+			data-bind="pos: pos(), size: size(), text: hp()"></div>
 	<!-- /ko -->
-		
+
+	<!-- ko foreach: bullets -->
+		<div style="position: absolute; background-color:blue"
+			data-bind="pos: pos(), size: size()"></div>
+	<!-- /ko -->
+
 	<!-- ko foreach: enemies -->
-	    <div style="position: absolute; background-color:red"
-	         data-bind="pos: pos(), size: size()"></div>
+		<div style="position: absolute; background-color:red"
+			data-bind="pos: pos(), size: size()"></div>
 	<!-- /ko -->
 	
 	<!-- ko with: you -->
-    	<div style="position: absolute; background-color:yellow"
-         data-bind="pos: pos(), size: size()"></div>
+		<div style="position: absolute; background-color:yellow"
+			data-bind="pos: pos(), size: size()"></div>
 	<!-- /ko -->
 </body>

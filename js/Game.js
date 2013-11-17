@@ -1,5 +1,5 @@
 ﻿define(function (require) {
-    var ko = require("knockout");
+	var ko = require("knockout");
 	
 	var Input = require("Input");
 	var Collision = require("Collision");
@@ -11,9 +11,9 @@
 	
 	var Vec2 = require("Vec2");
 
-    function rand(min, max) {
-        return Math.random() * (max - min) + min;
-    }
+	function rand(min, max) {
+		return Math.random() * (max - min) + min;
+	}
 	
 	function EnemyEntity(dispose, collision, base) {
 		var self = this;
@@ -97,13 +97,13 @@
 		you.size(new Vec2(50, 50));
 		world.you = you;
 
-        for (var ix = 0; ix < 300; ix++) {
+		for (var ix = 0; ix < 300; ix++) {
 			var enemy = new EnemyEntity(MakeRemove(world.enemies), collision, base);
 			enemy.pos(new Vec2(~~rand(10, 510), ~~rand(0, 100)));
 			enemy.size(new Vec2(10, 10));
 			enemy.vel(new Vec2(0, rand(50, 80)));
-            world.enemies.push(enemy);
-        }
+			world.enemies.push(enemy);
+		}
 		
 		base.hp.subscribe(function(newValue) {
 			
@@ -120,7 +120,7 @@
 		};
 	}
 
-    return function main() {
-        
-    }
+	return function main() {
+
+	}
 });
