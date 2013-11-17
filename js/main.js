@@ -18,9 +18,9 @@
         return Math.random() * (max - min) + min;
     }
 
-	function EnemyEntity(collision, base) {
+	function EnemyEntity(dispose, collision, base) {
 		var self = this;
-		var entity = embed(self, new Entity(collision));
+		var entity = embed(self, new Entity(dispose, collision));
 		
 		new Timer(self).every(1000, function() {
 			console.log("test");
@@ -38,7 +38,7 @@
 		}
 	}
 	
-	function YouEntity(collision, input) {
+	function YouEntity(dispose, collision, input) {
 		var self = this;
 		var entity = embed(self, new Entity(collision));
 		

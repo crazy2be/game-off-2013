@@ -1,14 +1,14 @@
 ﻿body {
-    background-color:aliceblue;
-    width:100vw;
-    height:100vh;
-    margin:0px;
-    overflow: hidden;
+	background-color:aliceblue;
+	width:100vw;
+	height:100vh;
+	margin:0px;
+	overflow: hidden;
 }
 
 .perfChart {
-    position:absolute;
-    left:100vw;
-    width: 80px;
-    margin-left: -80px;
+	position:absolute;
+	left:100vw;
+	width: 80px;
+	margin-left: -80px;
 }

@@ -1,6 +1,6 @@
 ﻿define(function (require) {
-    var ko = require("knockout");
-    var $ = require("jquery");
+	var ko = require("knockout");
+	var $ = require("jquery");
 
 	return function Input() {
 		var self = this;

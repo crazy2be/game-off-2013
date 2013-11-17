@@ -1,10 +1,10 @@
 ﻿define(function (require) {
-    return function addBindingHandlers(bindingHandlers) {
-        bindingHandlers.stopBindings = {
-            init: function () {
-                return { controlsDescendantBindings: true };
-            }
-        };
+	return function addBindingHandlers(bindingHandlers) {
+		bindingHandlers.stopBindings = {
+			init: function () {
+				return { controlsDescendantBindings: true };
+			}
+		};
 		
 		bindingHandlers.pos = {
 			update: function(element, valueAccessor) {
@@ -23,5 +23,5 @@
 				element.style.height = size.y + 'px';
 			}
 		};
-    }
+	}
 });

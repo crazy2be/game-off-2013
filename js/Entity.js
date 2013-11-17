@@ -1,12 +1,12 @@
 ﻿define(function (require) {
-    var ko = require("knockout");
-    var $ = require("jquery");
+	var ko = require("knockout");
+	var $ = require("jquery");
 	var Vec2 = require("Vec2")
 
-    return function Entity(dispose, collision) {
-        var self = this;
+	return function Entity(collision) {
+		var self = this;
 
-        self.pos = ko.observable(new Vec2());
+		self.pos = ko.observable(new Vec2());
 		self.vel = ko.observable(new Vec2());
 		self.acc = ko.observable(new Vec2());
         self.size = ko.observable(new Vec2());
@@ -39,5 +39,5 @@
 			applyAcc(tickTime);
 			applyVel(tickTime);
 		};
-    }
+	}
 });
