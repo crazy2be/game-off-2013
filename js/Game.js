@@ -125,8 +125,9 @@
 			}
 		
 			base.hp.subscribe(function(newValue) {
-				if(newValue < 0 && world.gameState() !== "gameover") {
+				if(newValue < 0 && world.gameState() === "playing") {
 					world.gameState("gameover");
+					base.hp(0);
 					new Timer(self).after(5000, function() {
 						world.gameState("playing");
 					})
@@ -146,10 +147,13 @@
 				entity.tick(tickTime);
 			}
 
-			world.enemies().forEach(applyTick);
-			world.friendos().forEach(applyTick);
+
+			if(world.gameState() === "playing") {
+				world.enemies().forEach(applyTick);
+				world.friendos().forEach(applyTick);
 			
-			applyTick(world.you);
+				applyTick(world.you);
+			}
 		};
 	}
 });
