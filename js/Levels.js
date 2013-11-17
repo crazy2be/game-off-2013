@@ -26,12 +26,12 @@
 		var input = new Input();
 		var you = new Ents.YouEntity(game, collision, input);
 	
-		you.pos(new Vec2(45, 90));
+		you.pos(new Vec2(45, 85));
 		you.size(new Vec2(10, 5));
 		
 		world.friendos.push(you);
 
-		for (var ix = 0; ix < 150; ix++) {
+		for (var ix = 0; ix < 1; ix++) {
 			var enemy = new Ents.EnemyEntity(game, collision, base);
 			enemy.pos(new Vec2(~~rand(0, 100), ~~rand(0, 10)));
 			enemy.size(new Vec2(2, 2));
