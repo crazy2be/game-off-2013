@@ -79,11 +79,9 @@
 			return function(obj) {
 				for (var ix = array.length - 1; ix >= 0; ix--) {
 					if(array[ix] === obj) {
-						array.splice(ix, 1);
+						arrayObserv.splice(ix, 1);
 					}
 				}
-				
-				arrayObserv.valueHasMutated();
 			}
 		}
 
