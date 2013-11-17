@@ -18,7 +18,7 @@
         return Math.random() * (max - min) + min;
     }
 
-	function EnemyEntity(collision) {
+	function EnemyEntity(collision, base) {
 		var self = this;
 		var entity = embed(self, new Entity(collision));
 		
@@ -29,6 +29,11 @@
 		
 		self.tick = function(tickTime) {
 			Timer.TickAll(self, tickTime);
+			
+			if(collision.intersects(base.colObj, self.colObj)) {
+				base.hp(base.hp() - 1);
+			}
+			
 			entity.tick.apply(self, arguments);
 		}
 	}
@@ -52,6 +57,11 @@
 			entity.tick.apply(self, arguments);
 		}
 	}
+	
+	function BaseEntity(collision) {
+		var self = this;
+		var entity = embed(self, new Entity(collision));
+	}
 
     return function main() {
         var world = {
@@ -63,17 +73,23 @@
 		var input = new Input();
 		var collision = new Collision();
 
+		var base = new BaseEntity(collision);
+		base.pos(new Vec2(0, 200));
+		base.size(new Vec2(200, 200));
+		
+		world.friendos.push(base);
+		
+		world.you = new YouEntity(collision, input);
+		world.you.pos(new Vec2(300, 200));
+		world.you.size(new Vec2(50, 50));
+
         for (var ix = 0; ix < 1; ix++) {
-			var enemy = new EnemyEntity(collision);
+			var enemy = new EnemyEntity(collision, base);
 			enemy.pos(new Vec2(~~rand(10, 510), ~~rand(0, 100)));
 			enemy.size(new Vec2(10, 10));
 			enemy.vel(new Vec2(0, rand(50, 80)));
             world.enemies.push(enemy);
         }
-		
-		world.you = new YouEntity(collision, input);
-		world.you.pos(new Vec2(300, 200));
-		world.you.size(new Vec2(50, 50));
 
         addBindings(ko.bindingHandlers);
 

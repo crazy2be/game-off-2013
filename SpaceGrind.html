@@ -11,13 +11,18 @@
 <body>
     <div class="perfChart"></div>
 	
-	<!-- ko foreach: enemies -->
-	    <div style="position: absolute; background-color:red"
-	         data-bind="pos: pos(), size: size()"></div>
-	<!-- /ko -->
-	
 	<!-- ko with: you -->
     	<div style="position: absolute; background-color:yellow"
          data-bind="pos: pos(), size: size()"></div>
+	<!-- /ko -->
+	
+	<!-- ko foreach: friendos -->
+	    <div style="position: absolute; background-color:green"
+	         data-bind="pos: pos(), size: size(), text: hp()"></div>
+	<!-- /ko -->
+	
+	<!-- ko foreach: enemies -->
+	    <div style="position: absolute; background-color:red"
+	         data-bind="pos: pos(), size: size()"></div>
 	<!-- /ko -->
 </body>

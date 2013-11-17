@@ -27,7 +27,7 @@
 			}
 		};
 		
-		function intersects(obj1, obj2) {
+		self.intersects = function(obj1, obj2) {
 			var pos1 = obj1.pos;
 			var size1 = obj1.size;
 			var pos2 = obj2.pos;
@@ -46,13 +46,14 @@
 			return true;
 		}
 		
-		self.collides = function(obj) {
+		self.collides = function(obj, excludeFnc) {
 			var size = size || new Vec2(1, 1);
+			excludeFnc = excludeFnc || function(otherObj) { return otherObj === obj; };
 			
 			for(var ix = objArray.length - 1; ix >= 0; ix--) {
 				var otherObj = objArray[ix];
-				if(otherObj === obj) continue;
-				if(intersects(otherObj, obj)) return objArray[ix];
+				if(excludeFnc(otherObj)) continue;
+				if(self.intersects(otherObj, obj)) return objArray[ix];
 			}
 			
 			return null;

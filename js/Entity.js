@@ -10,6 +10,7 @@
 		self.vel = ko.observable(new Vec2());
 		self.acc = ko.observable(new Vec2());
         self.size = ko.observable(new Vec2());
+		self.hp = ko.observable(100);
 		
 		self.colObj = collision.addObj(self.pos(), self.vel());
 		
