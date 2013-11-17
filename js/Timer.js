@@ -15,10 +15,10 @@
 	}
 	
 	Timer.TickAll = function(host, tickTime) {
-		if(!host.timeFncs) return;
+		if(!host.timerFncs) return;
 		
-		for(var ix = host.timeFncs.length - 1; ix >= 0; ix--) {
-			var timerData = host.timeFncs[ix];
+		for(var ix = host.timerFncs.length - 1; ix >= 0; ix--) {
+			var timerData = host.timerFncs[ix];
 			
 			timerData.timeLeft -= tickTime;
 			if(timerData.timeLeft < 0) {
@@ -26,7 +26,7 @@
 				timerData.timeLeft = timerData.duration;
 				
 				if(timerData.removeOnDone) {
-					host.timeFncs.splice(ix, 1);
+					host.timerFncs.splice(ix, 1);
 				}
 			}
 		}

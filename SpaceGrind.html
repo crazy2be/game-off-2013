@@ -2,13 +2,9 @@
     <title>Space Grind</title>
     <script data-main="js/boot.js" src="js/lib/require.js"></script>
     <link rel="stylesheet" href="css/main.css"/>
-    <style>
-    .entity {
-      position: absolute; background-color: red; width: 10px; height: 10px;
-    }
-    </style>
 </head>
 <body>
+	
     <div class="perfChart"></div>
 		
 	<!-- ko foreach: friendos -->
@@ -25,4 +21,13 @@
     	<div style="position: absolute; background-color:yellow"
          data-bind="pos: pos(), size: size()"></div>
 	<!-- /ko -->
+
+	<div class="statusScreen" data-bind="css: { gameOverScreen: gameState() == 'gameover' }">
+		<div class="centerStage1">
+			<div class="centerStage2">
+				<div class="centerStage3 gameOverMessage">Game Over</div>
+			</div>
+		</div>
+	</div>
+
 </body>

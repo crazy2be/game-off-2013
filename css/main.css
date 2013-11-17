@@ -6,6 +6,44 @@
 	overflow: hidden;
 }
 
+.entity {
+	position: absolute;
+	background-color: red;
+	width: 10px;
+	height: 10px;
+}
+
+.centerStage1 {
+	pointer-events: none;
+	margin-left: 50vw;
+	margin-top: 50vh;
+}
+	.centerStage2 {
+		display: inline-block;
+	}
+		.centerStage3 {
+			margin-left: -50%;
+			margin-top: -50%;
+		}
+
+.statusScreen {
+	position:absolute;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+}
+
+.gameOverScreen {
+	opacity: 100;
+	transition: all 1s ease;
+	background-color: hsla(0, 100%, 100%, 0.6);
+}
+
+	.gameOverMessage {
+		font-size: 30px;
+	}
+
+
 .perfChart {
 	position:absolute;
 	left:100vw;
