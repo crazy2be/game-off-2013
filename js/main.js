@@ -6,6 +6,11 @@
 	
 	var Game = require("Game");
 
+	var Firebase = require("Firebase");
+
+	var fb = new Firebase('https://r4zlxbwki99.firebaseio-demo.com/');
+	fb.set("Testing");
+
 	function resize() {
 		var w = window.innerWidth;
 		var h = window.innerHeight;
