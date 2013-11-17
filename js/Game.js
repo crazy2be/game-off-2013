@@ -1,5 +1,5 @@
 ﻿define(function (require) {
-    var ko = require("knockout");
+	var ko = require("knockout");
 	
     var $ = require("jquery");
     var addBindings = require("customBindings");
@@ -14,9 +14,9 @@
 	
 	var Vec2 = require("Vec2");
 
-    function rand(min, max) {
-        return Math.random() * (max - min) + min;
-    }
+	function rand(min, max) {
+		return Math.random() * (max - min) + min;
+	}
 	
 	function EnemyEntity(dispose, collision, base) {
 		var self = this;
@@ -91,7 +91,8 @@
         var world = {
             enemies: ko.observableArray(),
             friendos: ko.observableArray(),
-            you: {},
+			bullets: ko.observableArray(),
+            you: new YouEntity(null, collision, input),
 			gameState: ko.observable("starting") //starting, playing, gameover
         };
 
@@ -112,10 +113,8 @@
 			world.friendos.push(base);
 		
 			//Dispose won't work yet..
-			var you = new YouEntity(null, collision, input);
-			you.pos(new Vec2(300, 200));
-			you.size(new Vec2(50, 50));
-			world.you = you;
+			world.you.pos(new Vec2(300, 200));
+			world.you.size(new Vec2(50, 50));
 
 	        for (var ix = 0; ix < 300; ix++) {
 				var enemy = new EnemyEntity(MakeRemove(world.enemies), collision, base);
@@ -154,7 +153,7 @@
 		};
 	}
 
-    return function main() {
-        
-    }
+	return function main() {
+
+	}
 });
