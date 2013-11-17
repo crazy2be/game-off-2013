@@ -3,96 +3,68 @@
     var PerfChart = require("perf/PerfChart");
     var $ = require("jquery");
     var addBindings = require("customBindings");
+	var Input = require("Input");
+	
+	var Entity = require("Entity");
+	
+	var embed = require("embed");
+	
+	var Vec2 = require("Vec2");
 
-    /*return*/ function main() {
-      var chart = new PerfChart();
-      $('.perfChart')[0].appendChild(chart.elm);
-      function observable(obj) {
-        obj.__cbs = {};
-        obj.on = function (evt, cb) {
-          (obj.__cbs[evt] = obj.__cbs[evt] || []).push(cb);};
-        obj.fire = function (evt/* args ... */) {
-          var args = Array.prototype.slice.call(arguments, 1);
-          (obj.__cbs[evt] || []).forEach(function (cb) {
-            cb.apply(obj, args);})};};
-      function Vec2(x, y) {
-        observable(this);
-        Object.defineProperty(this, "x", {
-          get: function () { return this._x },
-          set: function (x) {
-            this._x = x;
-            this.fire("changed", x);}});
-        Object.defineProperty(this, "y", {
-          get: function () { return this._y },
-          set: function (y) {
-            this._y = y;
-            this.fire("changed", y);}});
-        this.x = +(x || 0);
-        this.y = +(y || 0);
-      }
-      function Entity(x, y, w, h) {
-        var self = this;
-        observable(self);
-        self.pos = new Vec2(x, y);
-        self.pos.on("changed", function(val) {
-          self.fire("moved", self.pos);});}
-      function EntityPresenter(entity) {
-        var self = this;
-        var elem = document.createElement('div');
-        elem.className = 'entity';
-        entity.on("moved", function (pos) {
-          elem.style.top = pos.y + 'px';
-          elem.style.left = pos.x + 'px';});
-        document.body.appendChild(elem);}
-      var entities = [];
-      var presenters = [];
-      for (var i = 0; i < 1000; i++) {
-        var entity = new Entity(Math.random()*1000 + 200, Math.random()*400 + 100, 0, 0);
-        var presenter = new EntityPresenter(entity);
-        entities.push(entity); presenters.push(presenter)}
-      var worldTime = new Date().getTime();
-      function gameLoop() {
-        var newTime = new Date().getTime();
-        var tickTime = newTime - worldTime;
-        worldTime = newTime;
+    function rand(min, max) {
+        return Math.random() * (max - min) + min;
+    }
 
-        chart.addDataPoint(tickTime);
-        for (var i = 0; i < entities.length; i++) {
-          entities[i].pos.y += Math.round(6*(Math.random() - 0.5));
-          entities[i].pos.x += Math.round(6*(Math.random() - 0.5));
-        }
-        requestAnimationFrame(gameLoop);
-      }
-      gameLoop();
-    };
+	function EnemyEntity() {
+		var self = this;
+		var entity = embed(self, new Entity());
+		
+		self.tick = function(tickTime) {
+			entity.tick.apply(self, arguments);
+			
+			entity.vel().y = rand(2, 12) / 1;
+		}
+	}
+	
+	function YouEntity(input) {
+		var self = this;
+		var entity = embed(self, new Entity());
+		
+		self.tick = function(tickTime) {
+			var xVel = 0;
+			if(input.keyboardState['A']) {
+				xVel -= 300;
+			}
+			if(input.keyboardState['D']) {
+				xVel += 300;
+			}
+			
+			entity.vel().x = xVel;
+			
+			entity.tick.apply(self, arguments);
+		}
+	}
+
     return function main() {
-        function Vec2(x, y) {
-            var self = this;
-
-            self.x = x || 0;
-           	self.y = y || 0;
-        }
-
-        function Entity(x, y, width, height) {
-            var self = this;
-
-            self.pos = ko.observable(new Vec2(x, y));
-            self.size = ko.observable(new Vec2(width, height));
-        }
-
         var world = {
             enemies: [],
             friendos: [],
             you: {}
         };
 
-        function rand(min, max) {
-            return Math.random() * (max - min) + min;
-        }
+		var input = new Input();
 
-        for (var ix = 0; ix < 1000; ix++) {
-            world.enemies.push(new Entity(~~rand(10, 510), ~~rand(0, 100), 10, 10));
+        for (var ix = 0; ix < 300; ix++) {
+			var enemy = new EnemyEntity();
+			enemy.pos(new Vec2(~~rand(10, 510), ~~rand(0, 100)));
+			enemy.size(new Vec2(10, 10));
+			enemy.vel(new Vec2(0, rand(0.5, 0.8)));
+            world.enemies.push(enemy);
         }
+		
+		world.you = new YouEntity(input);
+		world.you.pos(new Vec2(300, 500));
+		world.you.size(new Vec2(50, 50));
 
         addBindings(ko.bindingHandlers);
 
@@ -111,11 +83,14 @@
 
             chart.addDataPoint(tickTime);
 
-            world.enemies.forEach(function (enemy) {
-                enemy.pos().x += (Math.random() - 0.4) * tickTime / 10;
-                enemy.pos().y += (Math.random() - 0.4) * tickTime / 10;
-                enemy.pos.valueHasMutated();
-            });
+			function applyTick(entity) {
+				entity.tick(tickTime);
+			}
+
+            world.enemies.forEach(applyTick);
+			world.friendos.forEach(applyTick);
+			
+			applyTick(world.you);
         })();
     }
 });
