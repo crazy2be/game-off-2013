@@ -20,6 +20,8 @@
 			var newTime = new Date().getTime();
 			var tickTime = newTime - worldTime;
 			worldTime = newTime;
+			
+			tickTime = Math.min(tickTime, 350);
 
 			chart.addDataPoint(tickTime);
 

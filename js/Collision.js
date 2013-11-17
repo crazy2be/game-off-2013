@@ -6,6 +6,7 @@
 		
 		//Hmm... will this actually work?
 		var objArray = [];
+		self.objArrayDEBUG = objArray;
 		
 		//We return an object
 		self.addObj = function(entity) {

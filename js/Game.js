@@ -17,6 +17,12 @@
 	
 	var makeDoOnce = require("makeDoOnce");
 
+	function ReverseForEach(array, callback) {
+		for(var ix = array.length - 1; ix >= 0; ix--) {
+			callback(array[ix]);
+		}
+	}
+
 	function rand(min, max) {
 		return Math.random() * (max - min) + min;
 	}
@@ -136,17 +142,22 @@
 				world.enemies.push(enemy);
 			}
 			
-			world.enemies.subscribe(function(enemies){
+			var enemSub = world.enemies.subscribe(function(enemies){
 				if(enemies.length === 0) {
 					nextLevelCallback();
 				}
 			});
 		
-			base.hp.subscribe(function(newValue) {
+			var hpSub = base.hp.subscribe(function(newValue) {
 				if(newValue <= 0) {
 					gameOverCallback();
 				}
 			})
+			
+			return function dispose() {
+				enemSub.dispose();
+				hpSub.dispose();
+			}
 		}
 
 		var world = {
@@ -183,30 +194,35 @@
 			var obj = obj.obj;
 			var arrayObserv = arrayOfObj(obj);
 			var array = arrayObserv();
+			
+			collision.removeObj(obj.base);
 			for(var ix = array.length - 1; ix >= 0; ix--) {
 				if(array[ix] === obj) {
 					arrayObserv.splice(ix, 1);
 				}
 			}
-			
-			collision.removeObj(obj.base);
 		}
 
-		world.gameState.subscribe(function(gameState) {
-			if(gameState === "playing") {
-				startPlaying();
-			}
-		})
-
 		function startPlaying() {
+			var lastLevelDispose = null;
+			
 			function loadLevel() {
 				var curLevel = world.levels()[world.level()];
 			
-				world.enemies([]);
-				world.friendos([]);
-				world.bullets([]);
+				if(lastLevelDispose) {
+					lastLevelDispose();
+				}
+				
+				ReverseForEach(world.enemies(), self.remove);
+				ReverseForEach(world.friendos(), self.remove);
+				ReverseForEach(world.bullets(), self.remove);
+				
+				//1 for YouEntity
+				if(collision.objArrayDEBUG.length !== 1) {
+					throw "Collisions not correctly disposed!";
+				}
 			
-				curLevel(world, makeDoOnce(nextLevel), makeDoOnce(gameOver));
+				lastLevelDispose = curLevel(world, makeDoOnce(nextLevel), makeDoOnce(gameOver));
 			}
 			
 			//Could just watch the level... but then there is a chance they will change it multiple times...
@@ -220,14 +236,21 @@
 			}
 			
 			function gameOver() {
-				world.level(0);
+				world.gameState("gameover");
 				
-				loadLevel();
+				new Timer(self).after(4000, function() {
+					world.level(0);
+				
+					loadLevel();
+					
+					world.gameState("playing");
+				})
 			}
 			
 			loadLevel();
 		}
 		
+		startPlaying();
 		world.gameState("playing");
 		
 		addBindings(ko.bindingHandlers);
@@ -240,11 +263,10 @@
 				entity.tick(tickTime);
 			}
 
-
 			if(world.gameState() === "playing") {
-				world.enemies().forEach(applyTick);
-				world.friendos().forEach(applyTick);
-				world.bullets().forEach(applyTick);
+				ReverseForEach(world.enemies(), applyTick);
+				ReverseForEach(world.friendos(), applyTick);
+				ReverseForEach(world.bullets(), applyTick);
 			
 				applyTick(world.you);
 			}
