@@ -6,7 +6,19 @@
 	
 	var Game = require("Game");
 
+	function resize() {
+		var w = window.innerWidth;
+		var h = window.innerHeight;
+		var x = w > h ? (w - h) / 2 : 0;
+		var y = w > h ? 0 : (h - w) / 2;
+		var mwh = Math.min(w, h);
+		$('#gameboard').css('width', mwh).css('height', mwh)
+			.css('top', y).css('left', x);
+	}
 	return function main() {
+		$(window).on('resize', resize);
+		resize();
+
 		var game = new Game();
 
 		var chart = new PerfChart();

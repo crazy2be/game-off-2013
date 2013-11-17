@@ -1,4 +1,9 @@
-﻿body {
+* {
+	padding: 0px;
+	margin: 0px;
+	box-sizing: border-box;
+}
+body {
 	background-color:aliceblue;
 	width:100vw;
 	height:100vh;
@@ -6,6 +11,10 @@
 	overflow: hidden;
 }
 
+#gameboard {
+	position: relative;
+	border: 1px dotted red;
+}
 .Entity {
 	position: absolute;
 	background-color: red;
