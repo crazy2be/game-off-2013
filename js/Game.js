@@ -24,8 +24,8 @@
 	function rand(min, max) {
 		return Math.random() * (max - min) + min;
 	}
-		
-	return function Game() {
+
+	return function Game(db) {
 		var self = this;
 		
 		//Just for debugging... or maybe not...
