@@ -1,4 +1,4 @@
-define(function (require) {
+﻿define(function (require) {
 	var Vec2 = require("Vec2");
 	
 	function Collision() {
@@ -8,15 +8,8 @@ define(function (require) {
 		var objArray = [];
 		
 		//We return an object
-		self.addObj = function(pos, size) {
-			var colObj = {pos: pos, size: size};
-			objArray.push(colObj);
-			return colObj;
-		};
-		
-		self.updateObj = function(obj, pos, size) {
-			obj.pos = pos;
-			obj.size = size;
+		self.addObj = function(entity) {
+			objArray.push(entity);
 		};
 		
 		self.removeObj = function(obj) {
@@ -28,10 +21,10 @@ define(function (require) {
 		};
 		
 		self.intersects = function(obj1, obj2) {
-			var pos1 = obj1.pos;
-			var size1 = obj1.size;
-			var pos2 = obj2.pos;
-			var size2 = obj2.size;
+			var pos1 = obj1.pos();
+			var size1 = obj1.size();
+			var pos2 = obj2.pos();
+			var size2 = obj2.size();
 			
 			var x1End = pos1.x + size1.x;
 			var y1End = pos1.y + size1.y;
@@ -47,7 +40,6 @@ define(function (require) {
 		}
 		
 		self.collides = function(obj, excludeFnc) {
-			var size = size || new Vec2(1, 1);
 			excludeFnc = excludeFnc || function(otherObj) { return otherObj === obj; };
 			
 			for(var ix = objArray.length - 1; ix >= 0; ix--) {

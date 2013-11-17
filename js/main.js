@@ -30,7 +30,7 @@
 		self.tick = function(tickTime) {
 			Timer.TickAll(self, tickTime);
 			
-			if(collision.intersects(base.colObj, self.colObj)) {
+			if(collision.intersects(base, self)) {
 				base.hp(base.hp() - 1);
 				dispose(self);
 			}
@@ -53,7 +53,10 @@
 			}
 			
 			entity.vel().x = xVel;
-			entity.vel().y = collision.collides(self.colObj) ? 200 : 0;
+			var hitByEnemy = collision.collides(self, function(other){
+				return !other.types["EnemyEntity"];
+			}); 
+			entity.vel().y = hitByEnemy ? 200 : 0;
 			
 			entity.tick.apply(self, arguments);
 		}
@@ -80,6 +83,7 @@
 				for (var ix = array.length - 1; ix >= 0; ix--) {
 					if(array[ix] === obj) {
 						arrayObserv.splice(ix, 1);
+						collision.removeObj(obj);
 					}
 				}
 			}

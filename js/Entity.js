@@ -1,4 +1,4 @@
-define(function (require) {
+﻿define(function (require) {
 	var ko = require("knockout");
 	var $ = require("jquery");
 	var Vec2 = require("Vec2")
@@ -14,14 +14,7 @@ define(function (require) {
 		
 		self.dispose = dispose;
 		
-		self.colObj = collision.addObj(self.pos(), self.vel());
-		
-		self.pos.subscribe(function() {
-			collision.updateObj(self.colObj, self.pos(), self.size());
-		});
-		self.size.subscribe(function() {
-			collision.updateObj(self.colObj, self.pos(), self.size());
-		});
+		collision.addObj(self);
 		
 		function applyAcc(tickTime) {
 			self.vel().x += self.acc().x * tickTime / 1000;
