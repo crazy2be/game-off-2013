@@ -1,4 +1,4 @@
-﻿define(function (require) {
+define(function (require) {
 	var Vec2 = require("Vec2");
 	
 	function Collision() {

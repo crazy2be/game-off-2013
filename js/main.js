@@ -1,4 +1,4 @@
-﻿define(function (require) {
+define(function (require) {
 	var ko = require("knockout");
 	var PerfChart = require("perf/PerfChart");
 	var $ = require("jquery");
