@@ -1,4 +1,4 @@
-﻿define(function (require) {
+define(function (require) {
 	var ko = require("knockout");
 	var $ = require("jquery");
 	var Vec2 = require("Vec2");
@@ -9,7 +9,7 @@
 		self.pos = ko.observable(new Vec2());
 		self.vel = ko.observable(new Vec2());
 		self.acc = ko.observable(new Vec2());
-        self.size = ko.observable(new Vec2());
+		self.size = ko.observable(new Vec2());
 		self.hp = ko.observable(100);
 		
 		collision.addObj(self);

@@ -10,8 +10,8 @@
 			update: function(element, valueAccessor) {
 				//TODO: Cache the previous set params so we don't set all the DOM attributes at once.
 				var pos = valueAccessor();
-				element.style.left = pos.x / 10 + '%';
-				element.style.top = pos.y / 10 + '%';
+				element.style.left = pos.x + '%';
+				element.style.top = pos.y + '%';
 			}
 		};
 		
@@ -19,8 +19,8 @@
 			update: function(element, valueAccessor) {
 				//TODO: Cache the previous set params so we don't set all the DOM attributes at once.
 				var size = valueAccessor();
-				element.style.width = size.x / 10 + '%';
-				element.style.height = size.y / 10 + '%';
+				element.style.width = size.x + '%';
+				element.style.height = size.y + '%';
 			}
 		};
 		

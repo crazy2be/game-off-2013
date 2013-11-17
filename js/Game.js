@@ -82,7 +82,7 @@
 			if(input.keyboardState[' ']) {
 				throttle(self, 50, function() {
 					var bullet = new BulletEntity(game, collision, false);
-					bullet.size(new Vec2(10, 10));
+					bullet.size(new Vec2(1, 1));
 					bullet.pos(self.pos().clone());
 					game.add(bullet);
 				})
@@ -90,17 +90,13 @@
 			
 			var xVel = 0;
 			if(input.keyboardState['A']) {
-				xVel -= 300;
+				xVel -= 100;
 			}
 			if(input.keyboardState['D']) {
-				xVel += 300;
+				xVel += 100;
 			}
 			
 			entity.vel().x = xVel;
-			var hitByEnemy = collision.collides(self, function(other){
-				return other.types["EnemyEntity"];
-			});
-			entity.vel().y = hitByEnemy ? 200 : 0;
 			
 			entity.tick.apply(self, arguments);
 		}
@@ -126,19 +122,19 @@
 
 		function StartLevel(world, nextLevelCallback, gameOverCallback) {
 			var base = new BaseEntity(self, collision);
-			base.pos(new Vec2(0, 500));
-			base.size(new Vec2(600, 200));
+			base.pos(new Vec2(0, 90));
+			base.size(new Vec2(100, 10));
 		
 			world.friendos.push(base);
 		
-			world.you.pos(new Vec2(300, 450));
-			world.you.size(new Vec2(50, 50));
+			world.you.pos(new Vec2(45, 90));
+			world.you.size(new Vec2(10, 5));
 
 			for (var ix = 0; ix < 101; ix++) {
 				var enemy = new EnemyEntity(self, collision, base);
-				enemy.pos(new Vec2(~~rand(10, 510), ~~rand(0, 100)));
-				enemy.size(new Vec2(10, 10));
-				enemy.vel(new Vec2(0, rand(50, 80)));
+				enemy.pos(new Vec2(~~rand(0, 100), ~~rand(0, 10)));
+				enemy.size(new Vec2(2, 2));
+				enemy.vel(new Vec2(0, rand(1, 4)));
 				world.enemies.push(enemy);
 			}
 			
