@@ -6,6 +6,7 @@
 	
 	return function embed(dest, source, args) {
 		source.obj = dest;
+		dest.base = source;
 		
 		addType(dest, dest);
 		addType(dest, source);

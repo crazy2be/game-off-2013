@@ -145,7 +145,7 @@
 		}
 		
 		self.remove = function(obj) {
-			obj = obj.obj;
+			var obj = obj.obj;
 			var arrayObserv = arrayOfObj(obj);
 			var array = arrayObserv();
 			for(var ix = array.length - 1; ix >= 0; ix--) {
@@ -154,7 +154,7 @@
 				}
 			}
 			
-			collision.removeObj(obj);
+			collision.removeObj(obj.base);
 		}
 
 		world.gameState.subscribe(function(gameState) {

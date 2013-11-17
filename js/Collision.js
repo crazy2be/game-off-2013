@@ -16,8 +16,11 @@
 			for(var ix = objArray.length - 1; ix >= 0; ix--) {
 				if(objArray[ix] === obj) {
 					objArray.splice(ix, 1);
+					return;
 				}
 			}
+			
+			throw "Could not remove obj";
 		};
 		
 		self.intersects = function(obj1, obj2) {
