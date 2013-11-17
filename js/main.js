@@ -7,7 +7,7 @@
 	var Game = require("Game");
 
 	var Firebase = require("Firebase");
-	var db = new Firebase('https://r4zlxbwki99.firebaseio-demo.com/');
+	var db = new Firebase('https://r4zlxbwki99.firebaseio-demo.com/devGame');
 	db.set("Testing");
 
 	function resize() {
