@@ -10,12 +10,12 @@
 </head>
 <body>
     <div class="perfChart"></div>
-	
+		
 	<!-- ko foreach: friendos -->
 	    <div style="position: absolute; background-color:green"
 	         data-bind="pos: pos(), size: size(), text: hp()"></div>
 	<!-- /ko -->
-	
+		
 	<!-- ko foreach: enemies -->
 	    <div style="position: absolute; background-color:red"
 	         data-bind="pos: pos(), size: size()"></div>

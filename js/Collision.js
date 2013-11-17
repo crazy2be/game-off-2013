@@ -39,12 +39,12 @@
 			return true;
 		}
 		
-		self.collides = function(obj, includeFunc) {
-			excludeFnc = excludeFnc || function(otherObj) { return otherObj !== obj; };
+		self.collides = function(obj, includeFnc) {
+			includeFnc = includeFnc || function(otherObj) { return otherObj !== obj; };
 			
 			for(var ix = objArray.length - 1; ix >= 0; ix--) {
 				var otherObj = objArray[ix];
-				if(!includeFunc(otherObj)) continue;
+				if(!includeFnc(otherObj)) continue;
 				if(self.intersects(otherObj, obj)) return objArray[ix];
 			}
 			
