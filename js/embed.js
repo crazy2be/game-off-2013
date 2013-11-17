@@ -4,7 +4,8 @@
 		entity.types[obj.constructor.name] = true;
 	}
 	
-	return function embed(dest, source) {
+	return function embed(dest, source, args) {
+		source.obj = dest;
 		
 		addType(dest, dest);
 		addType(dest, source);

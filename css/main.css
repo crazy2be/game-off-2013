@@ -43,6 +43,32 @@
 		font-size: 30px;
 	}
 
+.entity {
+	position: absolute;
+}
+
+.friendo {
+	background-color:green;
+}
+
+.bullet {
+	background-color:blue;
+}
+
+.enemy {
+	background-color:red;
+}
+
+.you {
+	background-color:yellow;
+}
+
+.healthBar {
+	height: 20%;
+	margin-top: -30%;
+	margin-left: -50%;
+	background-color: orange;
+}
 
 .perfChart {
 	position:absolute;

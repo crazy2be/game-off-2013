@@ -7,6 +7,7 @@
 	var Input = require("Input");
 	var Collision = require("Collision");
 	var Timer = require("Timer");
+	var throttle = require("throttle");
 	
 	var Entity = require("Entity");
 	
@@ -18,9 +19,9 @@
 		return Math.random() * (max - min) + min;
 	}
 	
-	function EnemyEntity(dispose, collision, base) {
+	function EnemyEntity(game, collision, base) {
 		var self = this;
-		var entity = embed(self, new Entity(dispose, collision));
+		var entity = embed(self, new Entity(game, collision));
 		
 		new Timer(self).every(1000, function() {
 			entity.acc().y = rand(-0.5, 0.5);
@@ -31,18 +32,54 @@
 			
 			if(collision.intersects(base, self)) {
 				base.hp(base.hp() - 1);
-				dispose(self);
+				game.remove(self);
 			}
 			
 			entity.tick.apply(self, arguments);
 		}
 	}
 	
-	function YouEntity(dispose, collision, input) {
+	function BulletEntity(game, collision, isEnemy) {
 		var self = this;
-		var entity = embed(self, new Entity(dispose, collision));
+		var entity = embed(self, new Entity(game, collision));
+		
+		self.tick = function(tickTime) {			
+			entity.vel().y = isEnemy ? 100 : -100;
+			
+			var hitEntity = collision.collides(self, function(other){
+				if(isEnemy) {
+					return !other.types["EnemyEntity"] && !other.types["BaseEntity"] && !other.types["BulletEntity"];
+				} else {
+					return other.types["EnemyEntity"];
+				}
+			});
+			
+			if(hitEntity) {
+				hitEntity.hp(hitEntity.hp() - 40);
+				game.remove(self);
+			}
+			
+			entity.tick.apply(self, arguments);
+		}
+	}
+	
+	function YouEntity(game, collision, input) {
+		var self = this;
+		var entity = embed(self, new Entity(game, collision));
+		
 		
 		self.tick = function(tickTime) {
+			Timer.TickAll(self, tickTime);
+			
+			if(input.keyboardState[' ']) {
+				throttle(self, 500, function() {
+					var bullet = new BulletEntity(game, collision, false);
+					bullet.size(new Vec2(10, 10));
+					bullet.pos(self.pos().clone());
+					game.add(bullet);
+				})
+			}
+			
 			var xVel = 0;
 			if(input.keyboardState['A']) {
 				xVel -= 300;
@@ -61,9 +98,9 @@
 		}
 	}
 	
-	function BaseEntity(dispose, collision) {
+	function BaseEntity(game, collision) {
 		var self = this;
-		var entity = embed(self, new Entity(dispose, collision));
+		var entity = embed(self, new Entity(game, collision));
 	
 		self.tick = function(tickTime) {
 			entity.tick.apply(self, arguments);
@@ -72,29 +109,53 @@
 	
 	return function Game(world) {
 		var self = this;
+		
+		//Just for debugging... or maybe not...
+		window.game = self;
 
 		var input = new Input();
 		var collision = new Collision();
-
-		function MakeRemove(arrayObserv) {
-			var array = arrayObserv();
-			return function(obj) {
-				for (var ix = array.length - 1; ix >= 0; ix--) {
-					if(array[ix] === obj) {
-						arrayObserv.splice(ix, 1);
-						collision.removeObj(obj);
-					}
-				}
-			}
-		}
 
 		var world = {
 			enemies: ko.observableArray(),
 			friendos: ko.observableArray(),
 			bullets: ko.observableArray(),
-			you: new YouEntity(null, collision, input),
+			you: new YouEntity(self, collision, input),
 			gameState: ko.observable("starting") //starting, playing, gameover
 		};
+		
+		window.world = world;
+
+		function arrayOfObj(obj) {
+			if(obj.types["EnemyEntity"]) {
+				return world.enemies;
+			} if(obj.types["BulletEntity"]) {
+				return world.bullets;
+			} else if(obj.types["YouEntity"]) {
+				throw "Eh, maybe don't remove yourself...";
+			} else {
+				return world.friendos;
+			}
+		}
+
+		//Uses types of obj to determine where to put it
+		self.add = function(obj) {
+			obj = obj.obj;
+			arrayOfObj(obj).push(obj);
+		}
+		
+		self.remove = function(obj) {
+			obj = obj.obj;
+			var arrayObserv = arrayOfObj(obj);
+			var array = arrayObserv();
+			for(var ix = array.length - 1; ix >= 0; ix--) {
+				if(array[ix] === obj) {
+					arrayObserv.splice(ix, 1);
+				}
+			}
+			
+			collision.removeObj(obj);
+		}
 
 		world.gameState.subscribe(function(gameState) {
 			if(gameState === "playing") {
@@ -105,19 +166,19 @@
 		function startPlaying() {
 			world.enemies([]);
 			world.friendos([]);
+			world.bullets([]);
 			
-			var base = new BaseEntity(MakeRemove(world.friendos), collision);
-			base.pos(new Vec2(0, 200));
+			var base = new BaseEntity(self, collision);
+			base.pos(new Vec2(0, 500));
 			base.size(new Vec2(600, 200));
 		
 			world.friendos.push(base);
 		
-			//Dispose won't work yet..
-			world.you.pos(new Vec2(300, 200));
+			world.you.pos(new Vec2(300, 450));
 			world.you.size(new Vec2(50, 50));
 
-			for (var ix = 0; ix < 300; ix++) {
-				var enemy = new EnemyEntity(MakeRemove(world.enemies), collision, base);
+			for (var ix = 0; ix < 100; ix++) {
+				var enemy = new EnemyEntity(self, collision, base);
 				enemy.pos(new Vec2(~~rand(10, 510), ~~rand(0, 100)));
 				enemy.size(new Vec2(10, 10));
 				enemy.vel(new Vec2(0, rand(50, 80)));
@@ -125,9 +186,13 @@
 			}
 		
 			base.hp.subscribe(function(newValue) {
-				if(newValue < 0 && world.gameState() === "playing") {
+				if(newValue <= 0 && world.gameState() === "playing") {
 					world.gameState("gameover");
-					base.hp(0);
+					
+					//Stupid knockout...
+					new Timer(self).after(5, function() {
+						base.hp(0);
+					})
 					new Timer(self).after(5000, function() {
 						world.gameState("playing");
 					})
@@ -151,6 +216,7 @@
 			if(world.gameState() === "playing") {
 				world.enemies().forEach(applyTick);
 				world.friendos().forEach(applyTick);
+				world.bullets().forEach(applyTick);
 			
 				applyTick(world.you);
 			}
