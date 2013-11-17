@@ -77,6 +77,16 @@
 		base.pos(new Vec2(0, 200));
 		base.size(new Vec2(200, 200));
 		
+		function MakeRemove(array, obj) {
+			return function() {
+				for (var ix = array.length - 1; ix >= 0; ix--) {
+					if(array[ix] === obj) {
+						array.splice(ix, 1);
+					}
+				}
+			}
+		}
+		
 		world.friendos.push(base);
 		
 		world.you = new YouEntity(collision, input);
