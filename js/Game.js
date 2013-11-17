@@ -17,9 +17,14 @@
 	
 	var makeDoOnce = require("makeDoOnce");
 
-	function ReverseForEach(array, callback) {
-		for(var ix = array.length - 1; ix >= 0; ix--) {
-			callback(array[ix]);
+	function forEach(array, callback) {
+		for(var ix = 0; ix < array.length; ix++) {
+			var tmp = array[ix];
+			callback(tmp);
+			if (array[ix] != tmp) {
+				// Element was removed
+				ix--
+			}
 		}
 	}
 
@@ -32,15 +37,15 @@
 		var entity = embed(self, new Entity(game, collision));
 		
 		new Timer(self).every(1000, function() {
-			entity.acc().y = rand(-0.5, 0.5);
+			entity.acc().y = rand(-0.1, 0.1);
 		})
 		
 		self.tick = function(tickTime) {
 			Timer.TickAll(self, tickTime);
 			
 			if(collision.intersects(base, self)) {
-				base.hp(base.hp() - 1);
 				game.remove(self);
+				base.hp(base.hp() - 1);
 			}
 			
 			entity.tick.apply(self, arguments);
@@ -63,8 +68,8 @@
 			});
 			
 			if(hitEntity) {
-				hitEntity.hp(hitEntity.hp() - 60);
 				game.remove(self);
+				hitEntity.hp(hitEntity.hp() - 60);
 			}
 			
 			entity.tick.apply(self, arguments);
@@ -209,9 +214,9 @@
 					lastLevelDispose();
 				}
 				
-				ReverseForEach(world.enemies(), self.remove);
-				ReverseForEach(world.friendos(), self.remove);
-				ReverseForEach(world.bullets(), self.remove);
+				forEach(world.enemies(), self.remove);
+				forEach(world.friendos(), self.remove);
+				forEach(world.bullets(), self.remove);
 				
 				//1 for YouEntity
 				if(collision.objArrayDEBUG.length !== 1) {
@@ -260,9 +265,9 @@
 			}
 
 			if(world.gameState() === "playing") {
-				ReverseForEach(world.enemies(), applyTick);
-				ReverseForEach(world.friendos(), applyTick);
-				ReverseForEach(world.bullets(), applyTick);
+				forEach(world.enemies(), applyTick);
+				forEach(world.friendos(), applyTick);
+				forEach(world.bullets(), applyTick);
 			
 				applyTick(world.you);
 			}
