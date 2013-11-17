@@ -1,8 +1,8 @@
 ﻿define(function (require) {
 	var ko = require("knockout");
 	
-    var $ = require("jquery");
-    var addBindings = require("customBindings");
+	var $ = require("jquery");
+	var addBindings = require("customBindings");
 	
 	var Input = require("Input");
 	var Collision = require("Collision");
@@ -88,13 +88,13 @@
 			}
 		}
 
-        var world = {
-            enemies: ko.observableArray(),
-            friendos: ko.observableArray(),
+		var world = {
+			enemies: ko.observableArray(),
+			friendos: ko.observableArray(),
 			bullets: ko.observableArray(),
-            you: new YouEntity(null, collision, input),
+			you: new YouEntity(null, collision, input),
 			gameState: ko.observable("starting") //starting, playing, gameover
-        };
+		};
 
 		world.gameState.subscribe(function(gameState) {
 			if(gameState === "playing") {
@@ -116,13 +116,13 @@
 			world.you.pos(new Vec2(300, 200));
 			world.you.size(new Vec2(50, 50));
 
-	        for (var ix = 0; ix < 300; ix++) {
+			for (var ix = 0; ix < 300; ix++) {
 				var enemy = new EnemyEntity(MakeRemove(world.enemies), collision, base);
 				enemy.pos(new Vec2(~~rand(10, 510), ~~rand(0, 100)));
 				enemy.size(new Vec2(10, 10));
 				enemy.vel(new Vec2(0, rand(50, 80)));
-	            world.enemies.push(enemy);
-	        }
+				world.enemies.push(enemy);
+			}
 		
 			base.hp.subscribe(function(newValue) {
 				if(newValue < 0 && world.gameState() !== "gameover") {
@@ -136,8 +136,8 @@
 		
 		world.gameState("playing");
 		
-        addBindings(ko.bindingHandlers);
-        ko.applyBindings(world);
+		addBindings(ko.bindingHandlers);
+		ko.applyBindings(world);
 		
 		self.tick = function(tickTime) {
 			Timer.TickAll(self, tickTime);
@@ -146,7 +146,7 @@
 				entity.tick(tickTime);
 			}
 
-            world.enemies().forEach(applyTick);
+			world.enemies().forEach(applyTick);
 			world.friendos().forEach(applyTick);
 			
 			applyTick(world.you);
