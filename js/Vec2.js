@@ -1,8 +1,8 @@
 ﻿define(function (require) {
-    return function Vec2(x, y) {
-        var self = this;
+  return function Vec2(x, y) {
+    var self = this;
 
-        self.x = x || 0;
-       	self.y = y || 0;
-    }
+    self.x = x || 0;
+    self.y = y || 0;
+  }
 });
