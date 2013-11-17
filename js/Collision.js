@@ -31,7 +31,7 @@
 			var pos1 = obj1.pos;
 			var size1 = obj1.size;
 			var pos2 = obj2.pos;
-			var size2 = obj2.pos;
+			var size2 = obj2.size;
 			
 			var x1End = pos1.x + size1.x;
 			var y1End = pos1.y + size1.y;
