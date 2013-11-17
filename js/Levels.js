@@ -31,7 +31,7 @@
 		
 		world.friendos.push(you);
 
-		for (var ix = 0; ix < 1; ix++) {
+		for (var ix = 0; ix < 150; ix++) {
 			var enemy = new Ents.EnemyEntity(game, collision, base);
 			enemy.pos(new Vec2(~~rand(0, 100), ~~rand(0, 10)));
 			enemy.size(new Vec2(2, 2));
