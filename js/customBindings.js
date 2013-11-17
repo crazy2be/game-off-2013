@@ -1,4 +1,4 @@
-define(function (require) {
+﻿define(function (require) {
 	return function addBindingHandlers(bindingHandlers) {
 		bindingHandlers.stopBindings = {
 			init: function () {
@@ -21,6 +21,16 @@ define(function (require) {
 				var size = valueAccessor();
 				element.style.width = size.x + 'px';
 				element.style.height = size.y + 'px';
+			}
+		};
+		
+		bindingHandlers.types = {
+			init: function(element, valueAccessor) {
+				var types = valueAccessor();
+				for(var key in types) {
+					var type = key;
+					$(element).addClass(type);
+				}
 			}
 		};
 	}

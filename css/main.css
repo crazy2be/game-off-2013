@@ -70,9 +70,22 @@
 	background-color: orange;
 }
 
+.BaseEntity .healthBar {
+	margin-top: 5%;
+}
+
+.YouEntity {
+	border: 2px solid black;
+}
+
 .perfChart {
 	position:absolute;
 	left:100vw;
 	width: 80px;
 	margin-left: -80px;
+}
+
+.gameInfo {
+	position: absolute;
+	left: 0px;
 }

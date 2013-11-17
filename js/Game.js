@@ -177,7 +177,7 @@
 			world.you.pos(new Vec2(300, 450));
 			world.you.size(new Vec2(50, 50));
 
-			for (var ix = 0; ix < 100; ix++) {
+			for (var ix = 0; ix < 1; ix++) {
 				var enemy = new EnemyEntity(self, collision, base);
 				enemy.pos(new Vec2(~~rand(10, 510), ~~rand(0, 100)));
 				enemy.size(new Vec2(10, 10));
