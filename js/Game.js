@@ -9,8 +9,6 @@
 	var Timer = require("Timer");
 	var throttle = require("throttle");
 	
-	var Entity = require("Entity");
-	
 	var embed = require("embed");
 	
 	var Vec2 = require("Vec2");
@@ -18,96 +16,15 @@
 	var makeDoOnce = require("makeDoOnce");
 	
 	var copyForEach = require("copyForEach");
+	
+	var Levels = require("Levels");
+	
+	var Ents = require("Ents");
 
 	function rand(min, max) {
 		return Math.random() * (max - min) + min;
 	}
-	
-	function EnemyEntity(game, collision, base) {
-		var self = this;
-		var entity = embed(self, new Entity(game, collision));
 		
-		new Timer(self).every(1000, function() {
-			self.acc().y = rand(-0.1, 0.1);
-		})
-	
-		
-		self.tick = function(tickTime) {
-			Timer.TickAll(self, tickTime);
-			
-			if(collision.intersects(base, self)) {
-				game.remove(self);
-				base.hp(base.hp() - 1);
-			}
-			
-			entity.tick.apply(self, arguments);
-		}
-	}
-	
-	function BulletEntity(game, collision, isEnemy) {
-		var self = this;
-		var entity = embed(self, new Entity(game, collision));
-		
-		self.tick = function(tickTime) {			
-			entity.vel().y = isEnemy ? 100 : -100;
-			
-			var hitEntity = collision.collides(self, function(other){
-				if(isEnemy) {
-					return !other.types["EnemyEntity"] && !other.types["BaseEntity"] && !other.types["BulletEntity"];
-				} else {
-					return other.types["EnemyEntity"];
-				}
-			});
-			
-			if(hitEntity) {
-				game.remove(self);
-				hitEntity.hp(hitEntity.hp() - 60);
-			}
-			
-			entity.tick.apply(self, arguments);
-		}
-	}
-	
-	function YouEntity(game, collision, input) {
-		var self = this;
-		var entity = embed(self, new Entity(game, collision));
-		
-		
-		self.tick = function(tickTime) {
-			Timer.TickAll(self, tickTime);
-			
-			if(input.keyboardState[' ']) {
-				throttle(self, 50, function() {
-					var bullet = new BulletEntity(game, collision, false);
-					bullet.size(new Vec2(1, 1));
-					bullet.pos(self.pos().clone());
-					game.add(bullet);
-				})
-			}
-			
-			var xVel = 0;
-			if(input.keyboardState['A']) {
-				xVel -= 100;
-			}
-			if(input.keyboardState['D']) {
-				xVel += 100;
-			}
-			
-			entity.vel().x = xVel;
-			
-			entity.tick.apply(self, arguments);
-		}
-	}
-	
-	function BaseEntity(game, collision) {
-		var self = this;
-		var entity = embed(self, new Entity(game, collision));
-	
-		self.tick = function(tickTime) {
-			entity.tick.apply(self, arguments);
-		}
-	}
-	
 	return function Game(world) {
 		var self = this;
 		
@@ -117,49 +34,13 @@
 		var input = new Input();
 		var collision = new Collision();
 
-		function StartLevel(world, nextLevelCallback, gameOverCallback) {
-			var base = new BaseEntity(self, collision);
-			base.pos(new Vec2(0, 90));
-			base.size(new Vec2(100, 10));
-		
-			world.friendos.push(base);
-		
-			world.you.pos(new Vec2(45, 90));
-			world.you.size(new Vec2(10, 5));
-
-			for (var ix = 0; ix < 150; ix++) {
-				var enemy = new EnemyEntity(self, collision, base);
-				enemy.pos(new Vec2(~~rand(0, 100), ~~rand(0, 10)));
-				enemy.size(new Vec2(2, 2));
-				enemy.vel(new Vec2(0, rand(4, 8)));
-				world.enemies.push(enemy);
-			}
-			
-			var enemSub = world.enemies.subscribe(function(enemies){
-				if(enemies.length === 0) {
-					nextLevelCallback();
-				}
-			});
-		
-			var hpSub = base.hp.subscribe(function(newValue) {
-				if(newValue <= 0) {
-					gameOverCallback();
-				}
-			})
-			
-			return function dispose() {
-				enemSub.dispose();
-				hpSub.dispose();
-			}
-		}
-
 		var world = {
 			enemies: ko.observableArray(),
 			friendos: ko.observableArray(),
 			bullets: ko.observableArray(),
-			you: new YouEntity(self, collision, input),
+			you: new Ents.YouEntity(self, collision, input),
 			gameState: ko.observable("starting"), //starting, playing, gameover
-			levels: ko.observableArray([StartLevel]),
+			levels: ko.observableArray([Levels.BasicLevel]),
 			level: ko.observable(0)
 		};
 		
@@ -215,7 +96,7 @@
 					throw "Collisions not correctly disposed!";
 				}
 			
-				lastLevelDispose = curLevel(world, makeDoOnce(nextLevel), makeDoOnce(gameOver));
+				lastLevelDispose = curLevel(world, self, collision, makeDoOnce(nextLevel), makeDoOnce(gameOver));
 			}
 			
 			//Could just watch the level... but then there is a chance they will change it multiple times...
