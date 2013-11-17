@@ -16,12 +16,8 @@
 	var Vec2 = require("Vec2");
 	
 	var makeDoOnce = require("makeDoOnce");
-
-	function ReverseForEach(array, callback) {
-		for(var ix = array.length - 1; ix >= 0; ix--) {
-			callback(array[ix]);
-		}
-	}
+	
+	var copyForEach = require("copyForEach");
 
 	function rand(min, max) {
 		return Math.random() * (max - min) + min;
@@ -32,8 +28,9 @@
 		var entity = embed(self, new Entity(game, collision));
 		
 		new Timer(self).every(1000, function() {
-			entity.acc().y = rand(-0.5, 0.5);
+			self.acc().y = rand(-0.1, 0.1);
 		})
+	
 		
 		self.tick = function(tickTime) {
 			Timer.TickAll(self, tickTime);
@@ -63,8 +60,8 @@
 			});
 			
 			if(hitEntity) {
-				hitEntity.hp(hitEntity.hp() - 60);
 				game.remove(self);
+				hitEntity.hp(hitEntity.hp() - 60);
 			}
 			
 			entity.tick.apply(self, arguments);
@@ -130,11 +127,11 @@
 			world.you.pos(new Vec2(45, 90));
 			world.you.size(new Vec2(10, 5));
 
-			for (var ix = 0; ix < 101; ix++) {
+			for (var ix = 0; ix < 150; ix++) {
 				var enemy = new EnemyEntity(self, collision, base);
 				enemy.pos(new Vec2(~~rand(0, 100), ~~rand(0, 10)));
 				enemy.size(new Vec2(2, 2));
-				enemy.vel(new Vec2(0, rand(1, 4)));
+				enemy.vel(new Vec2(0, rand(4, 8)));
 				world.enemies.push(enemy);
 			}
 			
@@ -209,9 +206,9 @@
 					lastLevelDispose();
 				}
 				
-				ReverseForEach(world.enemies(), self.remove);
-				ReverseForEach(world.friendos(), self.remove);
-				ReverseForEach(world.bullets(), self.remove);
+				copyForEach(world.enemies(), self.remove);
+				copyForEach(world.friendos(), self.remove);
+				copyForEach(world.bullets(), self.remove);
 				
 				//1 for YouEntity
 				if(collision.objArrayDEBUG.length !== 1) {
@@ -260,9 +257,9 @@
 			}
 
 			if(world.gameState() === "playing") {
-				ReverseForEach(world.enemies(), applyTick);
-				ReverseForEach(world.friendos(), applyTick);
-				ReverseForEach(world.bullets(), applyTick);
+				copyForEach(world.enemies(), applyTick);
+				copyForEach(world.friendos(), applyTick);
+				copyForEach(world.bullets(), applyTick);
 			
 				applyTick(world.you);
 			}

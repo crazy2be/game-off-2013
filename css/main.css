@@ -1,4 +1,4 @@
-* {
+﻿* {
 	padding: 0px;
 	margin: 0px;
 	box-sizing: border-box;
@@ -94,3 +94,7 @@ body {
 	.gameOverMessage {
 		font-size: 30px;
 	}
+	
+#gameboard {
+	position:absolute;
+}

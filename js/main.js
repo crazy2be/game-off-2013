@@ -18,7 +18,7 @@
 	return function main() {
 		$(window).on('resize', resize);
 		resize();
-		$('#loadingScreen').remove();
+		$('.loadingScreen').remove();
 
 		var game = new Game();
 
