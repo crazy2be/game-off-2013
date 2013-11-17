@@ -18,7 +18,7 @@
 	return function main() {
 		$(window).on('resize', resize);
 		resize();
-		$('#loadingScreen').remove();
+		$('#loadingScreen').fadeOut(500, 'swing', function () {$(this).remove()});
 
 		var game = new Game();
 

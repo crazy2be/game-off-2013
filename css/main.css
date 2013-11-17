@@ -9,6 +9,7 @@ body {
 	height: 100vh;
 	margin: 0px;
 	overflow: hidden;
+	font-family: sans-serif;
 }
 
 #gameboard {
@@ -57,10 +58,10 @@ body {
 	left: 0px;
 }
 
-.loadingScreen {
+#loadingScreen {
 	position: absolute;
 	top: 0; left: 0; right: 0; bottom: 0;
-	font-size: 30px;
+	font-size: 10px;
 	background: white;
 	z-index: 1000;
 }
