@@ -8,7 +8,6 @@
 
 	var Firebase = require("Firebase");
 	var db = new Firebase('https://r4zlxbwki99.firebaseio-demo.com/devGame');
-	db.set("Testing");
 
 	function resize() {
 		var w = window.innerWidth;
@@ -21,12 +20,32 @@
 			.css('top', y).css('left', x);
 	}
 	return function main() {
+		var hostNode = db.child('hasHost');
+		hostNode.transaction(function (hasHost) {
+			if (hasHost === null) {
+				return true;
+			} else {
+				return;
+			}
+		}, function (error, committed, snapshot) {
+			if (error) {
+				console.log('Transaction failed abnormally!', error);
+				return;
+			}
+
+			var isHost = committed ? true : false;
+			console.log(isHost ? "We are host" : "We are not host.");
+			bootup(isHost);
+		});
+	}
+
+	function bootup(isHost) {
 		$(window).on('resize', resize);
 		resize();
 
 		$('#loadingScreen').fadeOut(500, 'swing', function () {$(this).remove()});
 
-		var game = new Game(db);
+		var game = new Game(db, isHost);
 
 		var chart = new PerfChart();
 		$('.perfChart')[0].appendChild(chart.elm);

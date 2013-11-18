@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"time"
+// 	"time"
 	"net/http"
 	"strconv"
 	"strings"
@@ -21,7 +21,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/css")
 	}
 	if strings.HasSuffix(r.URL.Path, ".js") {
-		time.Sleep(1*time.Second)
+// 		time.Sleep(1*time.Second)
 	}
 	http.ServeFile(w, r, "."+r.URL.Path)
 }

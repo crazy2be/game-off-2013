@@ -25,7 +25,37 @@
 		return Math.random() * (max - min) + min;
 	}
 
-	return function Game(db) {
+	function clean(obj, chain) {
+		chain.push(obj);
+		var cloned = {};
+		var hasKeys = false;
+		for (var k in obj) {
+			hasKeys = true;
+			var val = obj[k];
+			if (val.subscribe) val = val();
+			if (k[0] === '_') continue;
+			if (typeof val === 'function') continue;
+			if (chain.indexOf(val) != -1) continue;
+			cloned[k] = clean(val, chain);
+		}
+		return hasKeys ? cloned : obj;
+	}
+
+	function pushToFirebase(db, obj) {
+		Object.keys(obj).forEach(function (k) {
+			if (k[0] === '_') return;
+			var val = obj[k];
+			var c = db.child(k);
+			if (val.subscribe) {
+				val.subscribe(function (newValue) {
+					c.set(clean(newValue, []));
+				});
+			}
+			pushToFirebase(c, val);
+		});
+	}
+
+	return function Game(db, isHost) {
 		var self = this;
 		
 		//Just for debugging... or maybe not...
@@ -41,6 +71,8 @@
 			levels: ko.observableArray([Levels.BasicLevel]),
 			level: ko.observable(0)
 		};
+
+		if (isHost) pushToFirebase(db, world);
 		
 		window.world = world;
 
@@ -127,6 +159,8 @@
 		ko.applyBindings(world);
 		
 		self.tick = function(tickTime) {
+			if (!isHost) return;
+
 			Timer.TickAll(self, tickTime);
 			
 			function applyTick(entity) {

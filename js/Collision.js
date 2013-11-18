@@ -21,7 +21,7 @@
 				}
 			}
 			
-			throw "Could not remove obj";
+			console.warn("Could not remove obj");
 		};
 		
 		self.intersects = function(obj1, obj2) {
