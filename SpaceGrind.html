@@ -8,7 +8,8 @@
 	<div id="gameboard">
 		<!-- ko foreach: friendos -->
 			<div class="entity friendo" data-bind="pos: pos(), size: size(), types: types">
-				<div class="healthBar" data-bind="style: { width: hp() + '%' }"></div>
+				<div class="healthBar" 
+				data-bind="style: { width: (types['BaseEntity'] ? 1 : 2) * hp() + '%' }"></div>
 			</div>
 		<!-- /ko -->
 

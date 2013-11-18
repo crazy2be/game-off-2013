@@ -16,7 +16,7 @@
 	function rand(min, max) {
 		return Math.random() * (max - min) + min;
 	}
-	
+
 	function BasicLevel(world, game, collision) {
 		var self = this;
 
