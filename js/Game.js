@@ -215,13 +215,13 @@
 			var enem = world.enemies.iterate();
 			var friendos = world.enemies.iterate();
 			var bullets = world.bullets.iterate();
-			console.log("Before", enem.length, friendos.length, bullets.length)
+// 			console.log("Before", enem.length, friendos.length, bullets.length)
 			if(world.gameState() === "playing") {
 				copyForEach(enem, applyTick);
 				copyForEach(friendos, applyTick);
 				copyForEach(bullets, applyTick);
 			}
-			console.log("After", enem.length, friendos.length, bullets.length)
+// 			console.log("After", enem.length, friendos.length, bullets.length)
 		};
 	}
 });
