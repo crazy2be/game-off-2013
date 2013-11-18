@@ -23,9 +23,9 @@
 			</div>
 		<!-- /ko -->
 		
-		<div class="gameInfo">
+<!--		<div class="gameInfo">
 			Enemies Left: <span data-bind="text: enemies().length">
-		</div>
+		</div>-->
 	</div>
 
 	<div id="loadingScreen">
@@ -41,6 +41,15 @@
 		<div class="centeredLevel2">
 		<div class="centeredLevel3">
 		Game Over
+		</div></div></div>
+	</div>
+
+	<div id="winScreen" data-bind="css: { won: gameState() == 'won' }">
+		<div class="centeredLevel1">
+		<div class="centeredLevel2">
+		<div class="centeredLevel3">
+		You Won!<br><br>
+		See if you can do better next time.
 		</div></div></div>
 	</div>
 

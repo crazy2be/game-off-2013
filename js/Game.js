@@ -96,7 +96,11 @@
 		}
 
 		function nextLevel() {
-			world.loadLevel(Levels.BasicLevel);
+			world.gameState("won");
+			new Timer(self).after(4000, function () {
+				world.loadLevel(Levels.BasicLevel);
+				world.gameState("playing");
+			});
 		}
 
 		function gameover() {

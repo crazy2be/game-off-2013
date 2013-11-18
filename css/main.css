@@ -59,13 +59,13 @@ body {
 	left: 0px;
 }
 
-#loadingScreen, #gameoverScreen {
+#loadingScreen, #gameoverScreen, #winScreen {
 	position: absolute;
 	top: 0; left: 0; right: 0; bottom: 0;
 	font-size: 10px;
 	z-index: 1000;
 }
-#gameoverScreen {
+#gameoverScreen, #winScreen {
 /* We can't just do display: none because it breaks all of the CSS transitions.
  * See http://stackoverflow.com/questions/3331353/transitions-on-the-display-property
  */
@@ -74,23 +74,22 @@ body {
 	opacity: 0;
 	transition: opacity 1s ease;
 	background-color: hsla(0, 100%, 100%, 0.6);
+	text-align: center;
 }
 #loadingScreen { background: white; }
-#gameoverScreen.gameover {
+#gameoverScreen.gameover, #winScreen.won {
 	top: 0;
 	bottom: 0;
 	opacity: 100;
 }
 
 .centeredLevel1 {
-	pointer-events: none;
-	margin-left: 50vw;
-	margin-top: 50vh;
+	display: table;
+	width: 100%;
+	height: 100%;
 }
 .centeredLevel2 {
-	display: inline-block;
-}
-.centeredLevel3 {
-	margin-left: -50%;
-	margin-top: -50%;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
 }
