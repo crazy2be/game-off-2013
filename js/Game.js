@@ -128,6 +128,7 @@
 // 			obj = obj.obj;
 			var arr = arrayOfObj(obj);
 			arr.add(obj); // it takes .id as key
+			collision.addObj(obj);
 		}
 		
 		self.remove = function(obj) {
@@ -159,9 +160,9 @@
 					lastLevelDispose();
 				}
 				
-				world.enemies.empty();
-				world.friendos.empty();
-				world.bullets.empty();
+				copyForEach(world.enemies.iterate(), self.remove);
+				copyForEach(world.friendos.iterate(), self.remove);
+				copyForEach(world.bullets.iterate(), self.remove);
 				
 				//1 for YouEntity
 				if(collision.objArrayDEBUG.length !== 0) {
@@ -211,11 +212,16 @@
 				entity.tick(tickTime);
 			}
 
+			var enem = world.enemies.iterate();
+			var friendos = world.enemies.iterate();
+			var bullets = world.bullets.iterate();
+			console.log("Before", enem.length, friendos.length, bullets.length)
 			if(world.gameState() === "playing") {
-				copyForEach(world.enemies.iterate(), applyTick);
-				copyForEach(world.friendos.iterate(), applyTick);
-				copyForEach(world.bullets.iterate(), applyTick);
+				copyForEach(enem, applyTick);
+				copyForEach(friendos, applyTick);
+				copyForEach(bullets, applyTick);
 			}
+			console.log("After", enem.length, friendos.length, bullets.length)
 		};
 	}
 });

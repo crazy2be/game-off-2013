@@ -12,8 +12,6 @@ define(function (require) {
 		self.size = ko.observable(new Vec2());
 		self.hp = ko.observable(100);
 		
-		collision.addObj(self);
-		
 		self.hp.subscribe(function(newHp) {
 			if(newHp <= 0) {
 				game.remove(self);

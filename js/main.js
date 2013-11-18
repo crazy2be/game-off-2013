@@ -12,7 +12,9 @@
 		var self = this;
 		self.child = function () { return self; };
 		self.on = function () {};
-		self.transaction = function (a, b) { b() };
+		self.transaction = function (a, b) { b(null, true) };
+		self.onDisconnect = function () { return self; };
+		self.remove = function () {};
 	}
 
 	function resize() {
@@ -26,7 +28,7 @@
 			.css('top', y).css('left', x);
 	}
 	return function main() {
-		var db = new Firebase('https://r4zlxbwki99.firebaseio-demo.com/devGame');
+		var db = new FakeDB('https://r4zlxbwki99.firebaseio-demo.com/devGame');
 		var hostNode = db.child('hasHost');
 		hostNode.transaction(function (hasHost) {
 			if (hasHost === null) {

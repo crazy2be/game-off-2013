@@ -10,10 +10,12 @@
 		
 		//We return an object
 		self.addObj = function(entity) {
+			if (!entity.id) throw "Adding obj with invalid id: " + entity.id;
 			objArray.push(entity);
 		};
 		
 		self.removeObj = function(obj) {
+			if (!obj.id) throw "Removing obj with invalid id " + obj.id;
 			for(var ix = objArray.length - 1; ix >= 0; ix--) {
 				if(objArray[ix].id === obj.id) {
 					objArray.splice(ix, 1);
