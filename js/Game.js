@@ -38,8 +38,7 @@
 			friendos: ko.observableArray(),
 			bullets: ko.observableArray(),
 			gameState: ko.observable("starting"), //starting, playing, gameover
-			levels: ko.observableArray([Levels.BasicLevel]),
-			level: ko.observable(0)
+			levelID: ko.observable(0),
 		};
 		
 		window.world = world;
@@ -54,73 +53,61 @@
 			}
 		}
 
+		function makeID() {
+			var str = "";
+			for (var i = 0; i < 10; i++) {
+				str += String.fromCharCode(rand(97, 122));
+			}
+			return str;
+		}
+
 		//Uses types of obj to determine where to put it
 		self.add = function(obj) {
-			obj = obj.obj;
+			if (obj.id) throw "Object already added!";
+			obj.id = makeID();
+			collision.addObj(obj);
 			arrayOfObj(obj).push(obj);
 		}
 		
 		self.remove = function(obj) {
-			var obj = obj.obj;
+			if (!obj.id) throw "Object never added!";
 			var arrayObserv = arrayOfObj(obj);
 			var array = arrayObserv();
-			
-			collision.removeObj(obj.base);
+
 			for(var ix = array.length - 1; ix >= 0; ix--) {
 				if(array[ix] === obj) {
 					arrayObserv.splice(ix, 1);
 				}
 			}
+			collision.removeObj(obj);
+			obj.id = '';
 		}
 
-		function startPlaying() {
-			var lastLevelDispose = null;
-			
-			function loadLevel() {
-				var curLevel = world.levels()[world.level()];
-			
-				if(lastLevelDispose) {
-					lastLevelDispose();
-				}
-				
-				copyForEach(world.enemies(), self.remove);
-				copyForEach(world.friendos(), self.remove);
-				copyForEach(world.bullets(), self.remove);
-				
-				//1 for YouEntity
-				if(collision.objArrayDEBUG.length !== 0) {
-					throw "Collisions not correctly disposed!";
-				}
-			
-				lastLevelDispose = curLevel(world, self, collision, makeDoOnce(nextLevel), makeDoOnce(gameOver));
+		world.loadLevel = function (level) {
+			copyForEach(world.enemies(), self.remove);
+			copyForEach(world.friendos(), self.remove);
+			copyForEach(world.bullets(), self.remove);
+
+			if(collision.objArrayDEBUG.length !== 0) {
+				throw "Collisions not correctly disposed!";
 			}
-			
-			//Could just watch the level... but then there is a chance they will change it multiple times...
-			function nextLevel() {
-				world.level(world.level() + 1);
-				if(world.level() >= world.levels().length) {
-					world.level(0);
-				}
-				
-				loadLevel();
-			}
-			
-			function gameOver() {
-				world.gameState("gameover");
-				
-				new Timer(self).after(4000, function() {
-					world.level(0);
-				
-					loadLevel();
-					
-					world.gameState("playing");
-				})
-			}
-			
-			loadLevel();
+
+			world.level = new level(world, game, collision);
 		}
-		
-		startPlaying();
+
+		function nextLevel() {
+			world.loadLevel(Levels.BasicLevel);
+		}
+
+		function gameover() {
+			world.gameState("gameover");
+			new Timer(self).after(4000, function() {
+				world.loadLevel(Levels.BasicLevel);
+				world.gameState("playing");
+			})
+		}
+
+		world.loadLevel(Levels.BasicLevel);
 		world.gameState("playing");
 		
 		addBindings(ko.bindingHandlers);
@@ -137,6 +124,11 @@
 				copyForEach(world.enemies(), applyTick);
 				copyForEach(world.friendos(), applyTick);
 				copyForEach(world.bullets(), applyTick);
+				if (world.level.beaten()) {
+					nextLevel();
+				} else if (world.level.failed()) {
+					gameover();
+				}
 			}
 		};
 	}

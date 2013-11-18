@@ -8,12 +8,13 @@
 		var objArray = [];
 		self.objArrayDEBUG = objArray;
 		
-		//We return an object
-		self.addObj = function(entity) {
-			objArray.push(entity);
+		self.addObj = function(obj) {
+			console.log("[collision system] adding ", obj.id);
+			objArray.push(obj);
 		};
 		
 		self.removeObj = function(obj) {
+			console.log("[collision system] removing ", obj.id);
 			for(var ix = objArray.length - 1; ix >= 0; ix--) {
 				if(objArray[ix] === obj) {
 					objArray.splice(ix, 1);
