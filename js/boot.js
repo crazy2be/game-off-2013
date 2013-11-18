@@ -1,8 +1,8 @@
 requirejs.config({
 	//We need paths because min files are annoying to handle with magicWrapper...
 	paths: {
-		jquery: 'lib/jquery',
-		knockout: 'lib/knockout',
+		jquery: '../lib/jquery',
+		knockout: '../lib/knockout',
 		Firebase: 'https://cdn.firebase.com/v0/firebase',
 	},
 	shim: {
