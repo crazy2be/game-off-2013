@@ -15,7 +15,7 @@
 		
 		self.removeObj = function(obj) {
 			for(var ix = objArray.length - 1; ix >= 0; ix--) {
-				if(objArray[ix] === obj) {
+				if(objArray[ix].id === obj.id) {
 					objArray.splice(ix, 1);
 					return;
 				}

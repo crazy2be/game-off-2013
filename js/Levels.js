@@ -21,7 +21,7 @@
 		var base = new Ents.BaseEntity(game, collision);
 		base.pos(new Vec2(0, 90));
 		base.size(new Vec2(100, 10));
-		world.friendos.push(base);
+		game.add(base);
 	
 		var input = new Input();
 		var you = new Ents.YouEntity(game, collision, input);
@@ -29,17 +29,17 @@
 		you.pos(new Vec2(45, 90));
 		you.size(new Vec2(10, 5));
 		
-		world.friendos.push(you);
+		game.add(you);
 
 		for (var ix = 0; ix < 150; ix++) {
 			var enemy = new Ents.EnemyEntity(game, collision, base);
 			enemy.pos(new Vec2(~~rand(0, 100), ~~rand(0, 10)));
 			enemy.size(new Vec2(2, 2));
 			enemy.vel(new Vec2(0, rand(4, 8)));
-			world.enemies.push(enemy);
+			game.add(enemy);
 		}
 		
-		var enemSub = world.enemies.subscribe(function(enemies){
+		var enemSub = world.enemies.iterate.subscribe(function(enemies){
 			if(enemies.length === 0) {
 				nextLevelCallback();
 			}

@@ -7,7 +7,13 @@
 	var Game = require("Game");
 
 	var Firebase = require("Firebase");
-	var db = new Firebase('https://r4zlxbwki99.firebaseio-demo.com/devGame');
+
+	function FakeDB() {
+		var self = this;
+		self.child = function () { return self; };
+		self.on = function () {};
+		self.transaction = function (a, b) { b() };
+	}
 
 	function resize() {
 		var w = window.innerWidth;
@@ -15,11 +21,12 @@
 		var x = w > h ? (w - h) / 2 : 0;
 		var y = w > h ? 0 : (h - w) / 2;
 		var mwh = Math.min(w, h);
-		
+
 		$('#gameboard').css('width', mwh).css('height', mwh)
 			.css('top', y).css('left', x);
 	}
 	return function main() {
+		var db = new Firebase('https://r4zlxbwki99.firebaseio-demo.com/devGame');
 		var hostNode = db.child('hasHost');
 		hostNode.transaction(function (hasHost) {
 			if (hasHost === null) {
@@ -35,11 +42,14 @@
 
 			var isHost = committed ? true : false;
 			console.log(isHost ? "We are host" : "We are not host.");
-			bootup(isHost);
+			if (isHost) {
+				hostNode.onDisconnect().remove();
+			}
+			bootup(db, isHost);
 		});
 	}
 
-	function bootup(isHost) {
+	function bootup(db, isHost) {
 		$(window).on('resize', resize);
 		resize();
 

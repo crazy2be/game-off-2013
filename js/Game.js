@@ -21,6 +21,8 @@
 	
 	var Ents = require("Ents");
 
+	ko.observableHash = require("../lib/observableHash");
+
 	function rand(min, max) {
 		return Math.random() * (max - min) + min;
 	}
@@ -55,6 +57,22 @@
 		});
 	}
 
+	function watchFirebase(db, obj) {
+		Object.keys(obj).forEach(function (k) {
+			if (k[0] === '_') return;
+			var val = obj[k];
+			var c = db.child(k);
+			if (val.subscribe) {
+				c.on('value', function (snapshot) {
+					val(snapshot.val());
+				});
+			}
+			watchFirebase(c, val);
+		});
+	}
+
+// 	db.on('child_added', function
+
 	return function Game(db, isHost) {
 		var self = this;
 		
@@ -64,45 +82,71 @@
 		var collision = new Collision();
 
 		var world = {
-			enemies: ko.observableArray(),
-			friendos: ko.observableArray(),
-			bullets: ko.observableArray(),
+			enemies: ko.observableHash({}),
+			friendos: ko.observableHash({}),
+			bullets: ko.observableHash({}),
 			gameState: ko.observable("starting"), //starting, playing, gameover
 			levels: ko.observableArray([Levels.BasicLevel]),
 			level: ko.observable(0)
 		};
 
-		if (isHost) pushToFirebase(db, world);
+// 		if (isHost) pushToFirebase(db, world);
+// 		else watchFirebase(db, world);
 		
 		window.world = world;
 
+		function objLength(obj) {
+			var len = 0;
+			for (var k in obj) len++;
+			 return len;
+		}
 		function arrayOfObj(obj) {
 			if(obj.types["EnemyEntity"]) {
 				return world.enemies;
 			} if(obj.types["BulletEntity"]) {
 				return world.bullets;
+			} else if (objLength(obj.types) < 2) {
+				throw "BaseEntity added!!! no allow.";
 			} else {
 				return world.friendos;
 			}
 		}
+		function makeIDStr() {
+			var str = '';
+			for (var i = 0; i < 20; i++) {
+				// http://www.asciitable.com/
+				str += String.fromCharCode(rand(97, 122))
+			}
+			return str;
+		}
 
 		//Uses types of obj to determine where to put it
 		self.add = function(obj) {
-			obj = obj.obj;
-			arrayOfObj(obj).push(obj);
+			if (obj.id) throw "Adding object that already exists.";
+			var id = makeIDStr()
+			obj.id = id;
+// 			obj = obj.obj;
+			var arr = arrayOfObj(obj);
+			arr.add(obj); // it takes .id as key
 		}
 		
 		self.remove = function(obj) {
-			var obj = obj.obj;
-			var arrayObserv = arrayOfObj(obj);
-			var array = arrayObserv();
-			
-			collision.removeObj(obj.base);
-			for(var ix = array.length - 1; ix >= 0; ix--) {
-				if(array[ix] === obj) {
-					arrayObserv.splice(ix, 1);
-				}
+			if (!obj.id) {
+// 				throw ("Attempt to remove object that doesn't exist.");
+				return;
 			}
+// 			var obj = obj.obj;
+			collision.removeObj(obj);
+			arrayOfObj(obj).remove(obj);
+			obj.id = "";
+// 			var arrayObserv = arrayOfObj(obj);
+// 			var array = arrayObserv();
+//
+// 			for(var ix = array.length - 1; ix >= 0; ix--) {
+// 				if(array[ix] === obj) {
+// 					arrayObserv.splice(ix, 1);
+// 				}
+// 			}
 		}
 
 		function startPlaying() {
@@ -115,9 +159,9 @@
 					lastLevelDispose();
 				}
 				
-				copyForEach(world.enemies(), self.remove);
-				copyForEach(world.friendos(), self.remove);
-				copyForEach(world.bullets(), self.remove);
+				world.enemies.empty();
+				world.friendos.empty();
+				world.bullets.empty();
 				
 				//1 for YouEntity
 				if(collision.objArrayDEBUG.length !== 0) {
@@ -168,9 +212,9 @@
 			}
 
 			if(world.gameState() === "playing") {
-				copyForEach(world.enemies(), applyTick);
-				copyForEach(world.friendos(), applyTick);
-				copyForEach(world.bullets(), applyTick);
+				copyForEach(world.enemies.iterate(), applyTick);
+				copyForEach(world.friendos.iterate(), applyTick);
+				copyForEach(world.bullets.iterate(), applyTick);
 			}
 		};
 	}

@@ -23,11 +23,6 @@
 		
 		collision.addObj(self);
 		
-		self.hp.subscribe(function(newHp) {
-			if(newHp <= 0) {
-				game.remove(self);
-			}
-		});
 		
 		function applyAcc(tickTime) {
 			self.vel().x += self.acc().x * tickTime / 1000;
@@ -54,6 +49,13 @@
 		new Timer(self).every(1000, function() {
 			self.acc().y = rand(-0.1, 0.1);
 		})
+
+
+		self.hp.subscribe(function(newHp) {
+			if(newHp <= 0) {
+				game.remove(self);
+			}
+		});
 	
 		
 		self.tick = function(tickTime) {
@@ -82,12 +84,11 @@
 					return other.types["EnemyEntity"];
 				}
 			});
-			
 			if(hitEntity) {
-				game.remove(self);
 				hitEntity.hp(hitEntity.hp() - 60);
+				game.remove(self);
+				return;
 			}
-			
 			entity.tick.apply(self, arguments);
 		}
 	}
