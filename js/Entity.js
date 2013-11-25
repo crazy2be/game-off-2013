@@ -3,7 +3,7 @@ define(function (require) {
 	var $ = require("jquery");
 	var Vec2 = require("Vec2");
 	
-	function Entity(game, collision) {
+	function Entity(game) {
 		var self = this;
 
 		self.pos = ko.observable(new Vec2());

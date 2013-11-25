@@ -1,4 +1,5 @@
 ﻿define(function (require) {
+	var Eventable = require("Eventable");
 	var ko = require("knockout");
 	
 	var $ = require("jquery");
@@ -25,79 +26,87 @@
 		return Math.random() * (max - min) + min;
 	}
 
+	function randID() {
+		var str = "";
+		for (var i = 0; i < 10; i++) {
+			str += String.fromCharCode(rand(97, 122));
+		}
+		return str;
+	}
+
 	return function Game(db) {
 		var self = this;
-		
-		//Just for debugging... or maybe not...
-		window.game = self;
-
-		var collision = new Collision();
+		Eventable(self);
+		var collision = new Collision(self);
+		var timer = new Timer();
+		var levelManager = new Levels.Manager(self);
+		var objects = [];
 
 		var world = {
-			enemies: ko.observableArray(),
-			friendos: ko.observableArray(),
-			bullets: ko.observableArray(),
-			gameState: ko.observable("starting"), //starting, playing, gameover
-			levelID: ko.observable(0),
+			gameState: ko.observable(""),
 		};
-		
-		window.world = world;
 
-		function arrayOfObj(obj) {
-			if(obj.types["EnemyEntity"]) {
-				return world.enemies;
-			} if(obj.types["BulletEntity"]) {
-				return world.bullets;
-			} else {
-				return world.friendos;
-			}
-		}
-
-		function makeID() {
-			var str = "";
-			for (var i = 0; i < 10; i++) {
-				str += String.fromCharCode(rand(97, 122));
-			}
-			return str;
-		}
-
-		//Uses types of obj to determine where to put it
 		self.add = function(obj) {
 			if (obj.id) throw "Object already added!";
-			obj.id = makeID();
-			collision.addObj(obj);
-			arrayOfObj(obj).push(obj);
-		}
-		
+			obj.id = randID();
+			objects.push(obj);
+			self.fire('object_added', obj);
+		};
+
 		self.remove = function(obj) {
 			if (!obj.id) throw "Object never added!";
-			var arrayObserv = arrayOfObj(obj);
-			var array = arrayObserv();
+			self.fire('object_removed', obj);
+			objects.splice(objects.indexOf(obj), 1);
+			obj.id = '';
+		};
 
-			for(var ix = array.length - 1; ix >= 0; ix--) {
-				if(array[ix] === obj) {
-					arrayObserv.splice(ix, 1);
+		self.clear = function () {
+			for (var i = objects.length - 1; i >= 0; i--) {
+				self.remove(objects[i]);
+			}
+		};
+
+		self.find = function (type) {
+			var list = [];
+			for (var i = 0; i < objects.length; i++) {
+				if (objects[i].types && objects[i].types[type]) {
+					list.push(objects[i]);
 				}
 			}
-			collision.removeObj(obj);
-			obj.id = '';
+			return list;
 		}
 
-		world.loadLevel = function (level) {
-			copyForEach(world.enemies(), self.remove);
-			copyForEach(world.friendos(), self.remove);
-			copyForEach(world.bullets(), self.remove);
+		self.intersecting = function (entityA, entityB) {
+			return collision.intersects(entityA, entityB);
+		};
 
+		self.collide = function (obj, filter) {
+			return collision.collide(obj, filter);
+		}
+
+		self.input = new Input();
+
+		self.every = function (dur, fnc) {
+			timer.every(dur, fnc);
+		}
+		self.after = function (dur, fnc) {
+			timer.after(dur, fnc);
+		}
+
+		levelManager.on('next_level', function () {
 			if(collision.objArrayDEBUG.length !== 0) {
 				throw "Collisions not correctly disposed!";
 			}
+		});
 
-			world.level = new level(world, game, collision);
+		world.loadLevel = function (level) {
+			self.clear();
+			world.level = new level(self);
 		}
 
 		function nextLevel() {
 			world.gameState("won");
-			new Timer(self).after(4000, function () {
+			self.after(4000, function () {
 				world.loadLevel(Levels.BasicLevel);
 				world.gameState("playing");
 			});
@@ -105,7 +114,7 @@
 
 		function gameover() {
 			world.gameState("gameover");
-			new Timer(self).after(4000, function() {
+			self.after(4000, function() {
 				world.loadLevel(Levels.BasicLevel);
 				world.gameState("playing");
 			})
@@ -118,16 +127,16 @@
 		ko.applyBindings(world);
 		
 		self.tick = function(tickTime) {
-			Timer.TickAll(self, tickTime);
+			timer.tick(tickTime);
 			
 			function applyTick(entity) {
 				entity.tick(tickTime);
 			}
 
 			if(world.gameState() === "playing") {
-				copyForEach(world.enemies(), applyTick);
-				copyForEach(world.friendos(), applyTick);
-				copyForEach(world.bullets(), applyTick);
+				for (var i = 0; i < objects.length; i++) {
+					objects[i].tick(tickTime);
+				}
 				if (world.level.beaten()) {
 					nextLevel();
 				} else if (world.level.failed()) {

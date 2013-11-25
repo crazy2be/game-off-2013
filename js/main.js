@@ -5,10 +5,11 @@
 	var addBindings = require("customBindings");
 	
 	var Game = require("Game");
+	var GamePresenter = require("GamePresenter");
 
-	var Firebase = require("Firebase");
-	var db = new Firebase('https://r4zlxbwki99.firebaseio-demo.com/devGame');
-	db.set("Testing");
+// 	var Firebase = require("Firebase");
+// 	var db = new Firebase('https://r4zlxbwki99.firebaseio-demo.com/devGame');
+	var db = {};
 
 	function resize() {
 		var w = window.innerWidth;
@@ -27,6 +28,7 @@
 		$('#loadingScreen').fadeOut(500, 'swing', function () {$(this).remove()});
 
 		var game = new Game(db);
+		var gamePresenter = new GamePresenter(game);
 
 		var chart = new PerfChart();
 		$('.perfChart')[0].appendChild(chart.elm);

@@ -1,29 +1,27 @@
 ﻿define(function (require) {
 	var Vec2 = require("Vec2");
 	
-	function Collision() {
+	function Collision(game) {
 		var self = this;
 		
-		//Hmm... will this actually work?
-		var objArray = [];
-		self.objArrayDEBUG = objArray;
+		var collideables = [];
+		self.objArrayDEBUG = collideables;
 		
-		self.addObj = function(obj) {
+		game.on('object_added', function (obj) {
 			console.log("[collision system] adding ", obj.id);
-			objArray.push(obj);
-		};
+			collideables.push(obj);
+		});
 		
-		self.removeObj = function(obj) {
+		game.on('object_removed', function(obj) {
 			console.log("[collision system] removing ", obj.id);
-			for(var ix = objArray.length - 1; ix >= 0; ix--) {
-				if(objArray[ix] === obj) {
-					objArray.splice(ix, 1);
+			for(var ix = collideables.length - 1; ix >= 0; ix--) {
+				if(collideables[ix] === obj) {
+					collideables.splice(ix, 1);
 					return;
 				}
 			}
-			
 			throw "Could not remove obj";
-		};
+		});
 		
 		self.intersects = function(obj1, obj2) {
 			var pos1 = obj1.pos();
@@ -43,16 +41,14 @@
 			
 			return true;
 		}
-		
-		self.collides = function(obj, includeFnc) {
-			includeFnc = includeFnc || function(otherObj) { return otherObj !== obj; };
-			
-			for(var ix = objArray.length - 1; ix >= 0; ix--) {
-				var otherObj = objArray[ix];
-				if(!includeFnc(otherObj)) continue;
-				if(self.intersects(otherObj, obj)) return objArray[ix];
+
+		self.collide = function(obj, filter) {
+			filter = filter || function (other) { return false; };
+			for (var i = 0; i < collideables.length; i++) {
+				var other = collideables[i];
+				if (obj == other || filter(other)) continue;
+				if (self.intersects(obj, other)) return other;
 			}
-			
 			return null;
 		};
 	}

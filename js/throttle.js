@@ -1,6 +1,4 @@
-﻿define(function (require) {	
-	var Timer = require("Timer");
-	//Adds a timer to the host (so you must call Timer.TickAll)
+﻿define(function (require) {
 	return function throttle(host, freq, action) {
 		host.throttledFncs = host.throttledFncs || [];
 		
@@ -13,7 +11,7 @@
 		
 		if(!data.waiting) {
 			data.waiting = true;
-			new Timer(host).after(data.freq, function() {
+			host.after(data.freq, function() {
 				data.waiting = false;
 			});
 			action();
