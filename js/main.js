@@ -49,5 +49,6 @@
 
 			game.tick(tickTime);
 		})();
+		game.start();
 	}
 });

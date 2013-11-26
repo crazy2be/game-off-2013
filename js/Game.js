@@ -120,11 +120,13 @@
 			})
 		}
 
-		world.loadLevel(Levels.BasicLevel);
-		world.gameState("playing");
-		
-		addBindings(ko.bindingHandlers);
-		ko.applyBindings(world);
+		self.start = function () {
+			world.loadLevel(Levels.BasicLevel);
+			world.gameState("playing");
+
+			addBindings(ko.bindingHandlers);
+			ko.applyBindings(world);
+		};
 		
 		self.tick = function(tickTime) {
 			timer.tick(tickTime);
