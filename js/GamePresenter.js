@@ -24,7 +24,9 @@ define(function (require) {
 				elem.style.top = obj.pos().y + '%';
 			}
 			function updateHp() {
-				hp.style.width = obj.hp()*2 + '%';
+				var mult = obj.types["BulletEntity"] ? 0 :
+					obj.types["BaseEntity"] ? 1 : 2;
+				hp.style.width = obj.hp()*mult + '%';
 			}
 
 			obj.size.subscribe(updateSize);
