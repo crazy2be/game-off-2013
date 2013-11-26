@@ -21,5 +21,14 @@
 		self.after = function(dur, fnc) {
 			cbs.push({dur: dur, remaining: dur, fnc: fnc, once: true});
 		};
+		self.throttle = function (dur, fnc) {
+			var waiting = false;
+			return function () {
+				if (waiting) return;
+				waiting = true;
+				self.after(dur, function () { waiting = false });
+				fnc();
+			}
+		};
 	}
 });

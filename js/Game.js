@@ -72,11 +72,15 @@
 		}
 
 		self.every = function (dur, fnc) {
-			timer.every(dur, fnc);
+			return timer.every(dur, fnc);
 		}
 
 		self.after = function (dur, fnc) {
-			timer.after(dur, fnc);
+			return timer.after(dur, fnc);
+		}
+
+		self.throttle = function (dur, fnc) {
+			return timer.throttle(dur, fnc);
 		}
 
 

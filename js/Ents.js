@@ -55,15 +55,15 @@
 	function YouEntity(game) {
 		var self = this;
 		var entity = embed(self, new Entity(game));
-
-		self.tick = function(tickTime) {
-			if (game.keyIsDown(' ')) {
-				// TODO: Throttle this!
+		var fireFnc = game.throttle(50, function () {
 				var bullet = new BulletEntity(game);
 				bullet.size(new Vec2(1, 1));
 				bullet.pos(self.pos().clone());
 				game.add(bullet);
-			}
+		});
+
+		self.tick = function(tickTime) {
+			if (game.keyIsDown(' ')) fireFnc();
 			
 			var xVel = 0;
 			if(game.keyIsDown('A')) {

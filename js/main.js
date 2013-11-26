@@ -2,7 +2,6 @@
 	var ko = require("knockout");
 	var PerfChart = require("perf/PerfChart");
 	var $ = require("jquery");
-	var addBindings = require("customBindings");
 	
 	var Game = require("Game");
 	var GamePresenter = require("GamePresenter");
