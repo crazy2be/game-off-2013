@@ -5,28 +5,7 @@
 <body>
 	<div class="perfChart"></div>
 
-	<div id="gameboard">
-		<!-- #ko foreach: friendos -->
-			<!--<div class="entity friendo" data-bind="pos: pos(), size: size(), types: types">
-				<div class="healthBar" 
-				data-bind="style: { width: (types['BaseEntity'] ? 1 : 2) * hp() + '%' }"></div>
-			</div>-->
-		<!-- #/ko -->
-
-		<!-- #ko foreach: bullets -->
-			<!--<div class="entity bullet" data-bind="pos: pos(), size: size(), types: types"></div>-->
-		<!-- #/ko -->
-
-		<!-- #ko foreach: enemies -->
-			<!--<div class="entity enemy" data-bind="pos: pos(), size: size(), types: types">
-				<div class="healthBar" data-bind="style: { width: hp() * 2 + '%' }"></div>
-			</div>-->
-		<!-- #/ko -->
-		
-<!--		<div class="gameInfo">
-			Enemies Left: <span data-bind="text: enemies().length">
-		</div>-->
-	</div>
+	<div id="gameboard"></div>
 
 	<div id="loadingScreen">
 		<div class="centeredLevel1">

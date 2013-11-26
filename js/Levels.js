@@ -17,9 +17,8 @@
 	function BasicLevel(game) {
 		var self = this;
 
-		var base;
-		function start() {
-			base = new Ents.BaseEntity(game);
+		var base = new Ents.BaseEntity(game);
+		self.start = function () {
 			base.pos(new Vec2(0, 90));
 			base.size(new Vec2(100, 10));
 			game.add(base);
@@ -47,16 +46,44 @@
 		self.failed = function () {
 			return base.hp() <= 0;
 		};
-		start();
 	}
 
 	function LevelManager(game) {
 		var self = this;
 		Eventable(self);
+		var m_list = [
+			BasicLevel,
+			// TODO: Add more levels :)
+		];
+		var m_level;
+		var m_number;
+
+		self.load = function (number) {
+			if (number < 0 || number > m_list.length) {
+				throw "Unknown level " + number;
+			}
+			game.clear();
+			m_number = number;
+			m_level = new m_list[number](game);
+			m_level.start();
+			self.fire('level_loaded', number);
+		};
+		self.count = function () {
+			return m_list.length;
+		};
+		self.start = function () {
+			self.load(0);
+		};
+		self.tick = function () {
+			if (m_level.beaten()) {
+				self.fire('level_won', m_number);
+			} else if (m_level.failed()) {
+				self.fire('level_failed', m_number);
+			}
+		};
 	}
 	
 	return {
-		BasicLevel: BasicLevel,
 		Manager: LevelManager,
 	}
 });
