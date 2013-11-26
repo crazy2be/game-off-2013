@@ -3,6 +3,7 @@ define(function (require) {
 		objects = {};
 		elems = {};
 		gameboard = document.getElementById('gameboard');
+
 		game.on('object_added', function (obj) {
 // 			console.log("Presenter adding object: " + obj.id);
 			objects[obj.id] = obj;
@@ -37,6 +38,7 @@ define(function (require) {
 			elems[obj.id] = elem;
 			gameboard.appendChild(elem);
 		});
+
 		game.on('object_removed', function (obj) {
 // 			console.log("Presenter removing object: " + obj.id);
 			elems[obj.id].parentNode.removeChild(elems[obj.id]);

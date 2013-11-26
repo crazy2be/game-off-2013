@@ -2,8 +2,6 @@
 	var Eventable = require("Eventable");
 	var ko = require("knockout");
 	
-	var $ = require("jquery");
-	
 	var Input = require("Input");
 	var Collision = require("Collision");
 	var Timer = require("Timer");
@@ -27,6 +25,7 @@
 		Eventable(self);
 		var collision = new Collision(self);
 		var timer = new Timer();
+		var input = new Input();
 		var levelManager = new Levels.Manager(self);
 		var objects = [];
 
@@ -68,7 +67,9 @@
 			return collision.collide(obj, filter);
 		}
 
-		self.input = new Input();
+		self.keyIsDown = function (key) {
+			return input.keyIsDown(key);
+		}
 
 		self.every = function (dur, fnc) {
 			timer.every(dur, fnc);

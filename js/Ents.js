@@ -1,11 +1,8 @@
 ﻿define(function (require) {
 	var ko = require("knockout");
-	var $ = require("jquery");
 	var Vec2 = require("Vec2");
 	
 	var embed = require("embed");
-	
-	var throttle = require("throttle");
 
 	var Entity = require("Entity");
 	
@@ -58,10 +55,9 @@
 	function YouEntity(game) {
 		var self = this;
 		var entity = embed(self, new Entity(game));
-		var input = game.input;
 
 		self.tick = function(tickTime) {
-			if (input.keyboardState[' ']) {
+			if (game.keyIsDown(' ')) {
 				// TODO: Throttle this!
 				var bullet = new BulletEntity(game);
 				bullet.size(new Vec2(1, 1));
@@ -70,10 +66,10 @@
 			}
 			
 			var xVel = 0;
-			if(input.keyboardState['A']) {
+			if(game.keyIsDown('A')) {
 				xVel -= 100;
 			}
-			if(input.keyboardState['D']) {
+			if(game.keyIsDown('D')) {
 				xVel += 100;
 			}
 			

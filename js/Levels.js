@@ -1,15 +1,8 @@
 ﻿define(function (require) {
-	var ko = require("knockout");
-	
-	var $ = require("jquery");
-	var addBindings = require("customBindings");
-	
 	var Ents = require("Ents");
-	
 	var Vec2 = require("Vec2");
-
 	var Eventable = require("Eventable");
-	
+
 	function rand(min, max) {
 		return Math.random() * (max - min) + min;
 	}

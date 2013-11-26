@@ -1,46 +1,25 @@
 define(function (require) {
-	var ko = require("knockout");
 	var $ = require("jquery");
 
 	return function Input() {
 		var self = this;
 		
-		self.codeToChar = function(keycode) {
-			return String.fromCharCode(keycode);
+		function char(event) {
+			return String.fromCharCode(event.keyCode);
 		};
 		
-		self.keyboardState = {};
-		
-		function MakeKeyBasedEvent(subscribeFnc) {
-			return function(callback) {
-				subscribeFnc(function(event){
-					callback(self.codeToChar(event.keyCode));
-				});
-			}
-		}
-		
-		self.keydown = function(callback){
-			$('body').keydown(function(event){
-				callback(self.codeToChar(event.keyCode));
-			});
-		}
-		self.keyup = function(callback){
-			$('body').keyup(function(event){
-				callback(self.codeToChar(event.keyCode));
-			});
-		}
-		self.keypress = function(callback){
-			$('body').keypress(function(event){
-				callback(self.codeToChar(event.keyCode));
-			});
-		}
+		var keyboardState = {};
 		
 		$('body').keydown(function(event) {
-			self.keyboardState[self.codeToChar(event.keyCode)] = true;
+			keyboardState[char(event)] = true;
 		});
 		
 		$('body').keyup(function(event) {
-			self.keyboardState[self.codeToChar(event.keyCode)] = false;
+			keyboardState[char(event)] = false;
 		});
+
+		self.keyIsDown = function (key) {
+			return keyboardState[key];
+		}
 	}
 });
