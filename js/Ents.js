@@ -40,10 +40,13 @@
 	function BulletEntity(game) {
 		var self = this;
 		var entity = embed(self, new Entity(game));
-		entity.vel().y = 100;
+		entity.vel().y = -100;
 
+		function filter(other) {
+			return !other.types["EnemyEntity"];
+		}
 		self.tick = function(tickTime) {
-			var hitEntity = game.collide(self);
+			var hitEntity = game.collide(self, filter);
 			if (hitEntity) {
 				hitEntity.hp(hitEntity.hp() - 60);
 				game.remove(self);
@@ -56,15 +59,14 @@
 		var self = this;
 		var entity = embed(self, new Entity(game));
 		var input = game.input;
-		
+
 		self.tick = function(tickTime) {
-			if(input.keyboardState[' ']) {
-				throttle(game, 50, function() {
-					var bullet = new BulletEntity(game);
-					bullet.size(new Vec2(1, 1));
-					bullet.pos(self.pos().clone());
-					game.add(bullet);
-				})
+			if (input.keyboardState[' ']) {
+				// TODO: Throttle this!
+				var bullet = new BulletEntity(game);
+				bullet.size(new Vec2(1, 1));
+				bullet.pos(self.pos().clone());
+				game.add(bullet);
 			}
 			
 			var xVel = 0;

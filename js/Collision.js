@@ -8,12 +8,12 @@
 		self.objArrayDEBUG = collideables;
 		
 		game.on('object_added', function (obj) {
-			console.log("[collision system] adding ", obj.id);
+// 			console.log("[collision system] adding ", obj.id);
 			collideables.push(obj);
 		});
 		
 		game.on('object_removed', function(obj) {
-			console.log("[collision system] removing ", obj.id);
+// 			console.log("[collision system] removing ", obj.id);
 			for(var ix = collideables.length - 1; ix >= 0; ix--) {
 				if(collideables[ix] === obj) {
 					collideables.splice(ix, 1);

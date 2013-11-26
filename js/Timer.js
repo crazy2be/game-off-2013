@@ -10,16 +10,16 @@
 					if (cbs[i].once) {
 						cbs.splice(i, 1);
 					} else {
-						cbs.remaining = cbs.duration;
+						cbs.remaining = cbs.dur;
 					}
 				}
 			}
 		};
-		self.every = function(duration, fnc) {
-			cbs.push({duration: duration, timeLeft: duration, fnc: fnc});
+		self.every = function(dur, fnc) {
+			cbs.push({dur: dur, remaining: dur, fnc: fnc});
 		};
-		self.after = function(duration, fnc) {
-			cbs.push({duration: duration, timeLeft: duration, fnc: fnc, removeOnDone: true});
+		self.after = function(dur, fnc) {
+			cbs.push({dur: dur, remaining: dur, fnc: fnc, once: true});
 		};
 	}
 });

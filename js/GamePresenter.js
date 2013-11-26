@@ -4,7 +4,7 @@ define(function (require) {
 		elems = {};
 		gameboard = document.getElementById('gameboard');
 		game.on('object_added', function (obj) {
-			console.log("Presenter adding object: " + obj.id);
+// 			console.log("Presenter adding object: " + obj.id);
 			objects[obj.id] = obj;
 			var elem = document.createElement('div');
 			elem.className = "Entity";
@@ -15,22 +15,28 @@ define(function (require) {
 			hp.className = 'healthBar';
 			elem.appendChild(hp);
 
-			obj.pos.subscribe(function () {
-				elem.style.left = obj.pos().x + '%';
-				elem.style.top = obj.pos().y + '%';
-			});
-			obj.size.subscribe(function () {
+			function updateSize() {
 				elem.style.width = obj.size().x + '%';
 				elem.style.height = obj.size().y + '%';
-			});
-			obj.hp.subscribe(function () {
-				hp.style.width = obj.hp() + '%';
-			});
+			}
+			function updatePos() {
+				elem.style.left = obj.pos().x + '%';
+				elem.style.top = obj.pos().y + '%';
+			}
+			function updateHp() {
+				hp.style.width = obj.hp()*2 + '%';
+			}
+
+			obj.size.subscribe(updateSize);
+			obj.pos.subscribe(updatePos);
+			obj.hp.subscribe(updateHp);
+			updateSize(); updatePos(); updateHp();
+
 			elems[obj.id] = elem;
 			gameboard.appendChild(elem);
 		});
 		game.on('object_removed', function (obj) {
-			console.log("Presenter removing object: " + obj.id);
+// 			console.log("Presenter removing object: " + obj.id);
 			elems[obj.id].parentNode.removeChild(elems[obj.id]);
 		});
 	};
